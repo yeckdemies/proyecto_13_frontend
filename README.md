@@ -1,30 +1,12 @@
-# Proyecto_10_Frontend
+# React + Vite
 
-## Descripción
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Este proyecto es el frontend de la plataforma **PetAdopt**, una aplicación web que facilita la adopción de mascotas. Permite a los usuarios explorar mascotas disponibles para adopción, registrarse, iniciar sesión.
+Currently, two official plugins are available:
 
-## Instalación y configuración
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Sigue estos pasos para descargar el proyecto en tu entorno local:
+## Expanding the ESLint configuration
 
-### 1. Clona el repositorio:
-```bash
-git clone https://github.com/yeckdemies/Proyecto_10_Frontend.git
-```
-
-2. 
-### 2. Entra al directorio del proyecto:
-```bash
-cd Proyecto_10_Frontend
-```
-
-### Usuarios para pruebas
-
-| Usuario | Contraseña | Rol   |
-|---------|------------|-------|
-| admin   | admin      | Admin |
-| user    | user       | User  |
-
-###  Actualmente el Frontend está desplegado en Vercel
-https://proyecto-10-frontend.vercel.app/
+If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
