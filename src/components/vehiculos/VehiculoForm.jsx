@@ -1,4 +1,3 @@
-// VehiculoForm.jsx
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { createVehiculo, updateVehiculo } from '../../api/vehiculosService';
