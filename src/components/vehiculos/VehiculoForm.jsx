@@ -1,142 +1,76 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { createVehiculo, updateVehiculo } from '../../api/vehiculosService';
+import { toast } from 'react-toastify';
 
 const tabs = ['General', 'Permiso / Ubicación'];
 
 const VehiculoForm = ({ vehiculo, onClose }) => {
   const [activeTab, setActiveTab] = useState('General');
-  const [formData, setFormData] = useState({
-    tipoVehiculo: '',
-    matricula: '',
-    bastidor: '',
-    propiedad: '',
-    estado: 'activo',
-    tipoCombustible: '',
-    permisoCirculacion: null,
-    ciudad: '',
-    pais: '',
-    marca: '',
-    modelo: '',
-    año: '',
-    color: '',
-    // ... luego más campos
-  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm();
 
-  // Si estamos en modo edición
   useEffect(() => {
     if (vehiculo) {
-      setFormData({ ...vehiculo });
+      reset(vehiculo);
     }
-  }, [vehiculo]);
+  }, [vehiculo, reset]);
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === 'file') {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
     }
 
-    try {
-      if (vehiculo) {
-        await axios.put(`http://localhost:10000/api/v1/vehiculos/${vehiculo._id}`, data);
-      } else {
-        await axios.post('http://localhost:10000/api/v1/vehiculos', data);
-      }
+    const res = vehiculo
+      ? await updateVehiculo(vehiculo._id, formData)
+      : await createVehiculo(formData);
+
+    if (res.success) {
+      toast.success('Vehículo guardado correctamente');
       onClose();
-    } catch (error) {
-      console.error('Error al guardar vehículo:', error);
+    } else {
+      toast.error(res.message || 'Error al guardar vehículo');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex gap-2 bg-white shadow-sm p-2 rounded-t-lg mb-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="flex gap-2 bg-gray-100 p-2 rounded-md shadow-sm">
         {tabs.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium rounded ${
-              activeTab === tab
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-600 hover:text-blue-600'
-            }`}
+            className={`px-4 py-2 text-sm font-medium rounded transition 
+              ${activeTab === tab
+                ? 'bg-blue-600 text-white shadow'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-gray-200'}
+            `}
           >
             {tab}
           </button>
         ))}
       </div>
 
+      {/* TAB GENERAL */}
       {activeTab === 'General' && (
-        <div className="grid grid-cols-1 gap-4">
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Matrícula</label>
-            <input
-              name="matricula"
-              value={formData.matricula}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <InputField label="Matrícula" name="matricula" register={register} required errors={errors} />
+          <InputField label="Marca" name="marca" register={register} />
+          <InputField label="Modelo" name="modelo" register={register} />
+          <InputField label="Año" name="año" type="number" register={register} />
+          <InputField label="Color" name="color" register={register} />
 
           <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Marca</label>
-            <input
-              name="marca"
-              value={formData.marca}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Modelo</label>
-            <input
-              name="modelo"
-              value={formData.modelo}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Año</label>
-            <input
-              type="number"
-              name="año"
-              value={formData.año}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Color</label>
-            <input
-              name="color"
-              value={formData.color}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Tipo de vehículo</label>
+            <label className="text-sm font-medium text-gray-700">Tipo de Vehículo</label>
             <select
-              name="tipoVehiculo"
-              value={formData.tipoVehiculo}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
+              {...register("tipoVehiculo")}
+              className="mt-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Seleccionar</option>
               <option value="turismo">Turismo</option>
@@ -147,44 +81,19 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         </div>
       )}
 
+      {/* TAB PERMISO / UBICACIÓN */}
       {activeTab === 'Permiso / Ubicación' && (
-        <div className="grid gap-4">
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Permiso de circulación</label>
-            <input
-              type="file"
-              name="permisoCirculacion"
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Latitud</label>
-            <input
-              name="lat"
-              value={formData.lat || ''}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700">Longitud</label>
-            <input
-              name="lng"
-              value={formData.lng || ''}
-              onChange={handleChange}
-              className="border rounded px-3 py-2 text-sm"
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <InputField label="Permiso de circulación" name="permisoCirculacion" type="file" register={register} />
+          <InputField label="Latitud" name="lat" register={register} />
+          <InputField label="Longitud" name="lng" register={register} />
         </div>
       )}
 
       <div className="flex justify-end pt-4">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition"
         >
           Guardar
         </button>
@@ -192,5 +101,19 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     </form>
   );
 };
+
+const InputField = ({ label, name, register, required = false, type = 'text', errors }) => (
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700">{label}</label>
+    <input
+      type={type}
+      {...register(name, required ? { required: 'Campo requerido' } : {})}
+      className="mt-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    {errors?.[name] && (
+      <p className="text-red-500 text-xs mt-1">{errors[name].message}</p>
+    )}
+  </div>
+);
 
 export default VehiculoForm;

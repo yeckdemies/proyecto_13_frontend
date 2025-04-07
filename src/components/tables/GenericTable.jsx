@@ -8,28 +8,39 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import DotsLoader from '../DotsLoader';
 
-const GenericTable = ({ columns, dataUrl, title }) => {
+const GenericTable = ({ columns, dataUrl, data: externalData, title }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 20,
+    pageSize: 12,
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const res = await axios.get(dataUrl);
-        setData(res.data);
+      if (externalData) {
+        setData(externalData);
         setLoading(false);
-      } catch (err) {
-        console.error(`Error al cargar ${title}`, err);
+        return;
+      }
+
+      if (dataUrl) {
+        try {
+          const res = await axios.get(dataUrl);
+          setData(res.data);
+        } catch (err) {
+          console.error(`Error al cargar ${title}`, err);
+        } finally {
+          setLoading(false);
+        }
       }
     };
+
     fetchData();
-  }, [dataUrl, title]);
+  }, [dataUrl, externalData, title]);
 
   const table = useReactTable({
     data,
@@ -46,7 +57,12 @@ const GenericTable = ({ columns, dataUrl, title }) => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading) return <p className="text-gray-500">Cargando {title?.toLowerCase()}...</p>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center h-screen gap-4 text-gray-500">
+      <DotsLoader />
+    </div>
+  );
+
 
   return (
     <div className="w-full overflow-x-auto">

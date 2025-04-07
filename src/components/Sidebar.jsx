@@ -10,25 +10,21 @@ import {
   BuildingStorefrontIcon,
 } from '@heroicons/react/24/outline'
 
-
-
-
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
-  const sidebarRef = useRef(null);
+  const [showText, setShowText] = useState(false);
   const location = useLocation();
+  const timeoutRef = useRef();
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    if (open) {
+      timeoutRef.current = setTimeout(() => setShowText(true), 200); // espera a que termine la animación
+    } else {
+      clearTimeout(timeoutRef.current);
+      setShowText(false);
+    }
+    return () => clearTimeout(timeoutRef.current);
+  }, [open]);
 
   const menuItems = [
     { to: '/', label: 'Dashboard', icon: <HomeIcon className="w-6 h-6" /> },
@@ -42,44 +38,27 @@ const Sidebar = () => {
 
   return (
     <div
-      ref={sidebarRef}
-      className={`h-screen bg-white shadow-md transition-all duration-300 ease-in-out 
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className={`h-screen bg-white shadow-md transition-all duration-300 ease-in-out
       ${open ? 'w-64' : 'w-16'} flex flex-col`}
     >
-      {/* Header con botón */}
-      <div className="relative h-16 flex items-center shadow-sm">
-        <button
-          onClick={() => setOpen(!open)}
-          className={`absolute ${open ? 'right-4' : 'left-1/2 -translate-x-1/2'} 
-          text-gray-700 focus:outline-none`}
-        >
-          {open ? (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
+      <div className="flex-1 flex flex-col justify-center p-2">
+        <nav className="flex flex-col gap-2">
+          {menuItems.map(({ to, label, icon }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`flex items-center gap-4 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md transition 
+                ${location.pathname === to ? 'bg-blue-50 text-blue-600' : ''}
+              `}
+            >
+              {icon}
+              {showText && <span className="text-sm font-medium">{label}</span>}
+            </Link>
+          ))}
+        </nav>
       </div>
-
-      {/* Navegación */}
-      <nav className="flex flex-col gap-2 p-2">
-        {menuItems.map(({ to, label, icon }) => (
-          <Link
-            key={to}
-            to={to}
-            className={`flex items-center gap-4 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md transition 
-              ${location.pathname === to ? 'bg-blue-50 text-blue-600' : ''}
-            `}
-          >
-            {icon}
-            {open && <span className="text-sm font-medium">{label}</span>}
-          </Link>
-        ))}
-      </nav>
     </div>
   );
 };
