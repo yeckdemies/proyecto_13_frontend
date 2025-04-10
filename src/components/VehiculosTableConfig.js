@@ -15,4 +15,8 @@ export const vehiculosColumns = [
     header: 'Año',
     accessorKey: 'anio',
   },
+  {
+    header: 'Permiso de Circulación',
+    accessorKey: 'permisoCirculacionUrl',
+  }
 ];

@@ -7,7 +7,31 @@ export const getVehiculos = async () => {
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al cargar vehículos'
+      message: err.response?.data?.message || 'Error al cargar los vehículos'
+    };
+  }
+};
+
+export const getVehiculoById = async (id) => {
+  try {
+    const { data } = await apiClient.get(`/vehiculos/${id}`);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al obtener vehículo'
+    };
+  }
+};
+
+export const createVehiculo = async (vehiculo) => {
+  try {
+    const { data } = await apiClient.post('/vehiculos/createVehiculo', vehiculo);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al crear vehículo'
     };
   }
 };
@@ -24,17 +48,6 @@ export const updateVehiculo = async (id, vehiculo) => {
   }
 };
 
-export const createVehiculo = async (vehiculo) => {
-  try {
-    const { data } = await apiClient.post('/vehiculos', vehiculo);
-    return { success: true, data };
-  } catch (err) {
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Error al crear vehículo'
-    };
-  }
-};
 export const deleteVehiculo = async (id) => {
   try {
     const { data } = await apiClient.delete(`/vehiculos/${id}`);
