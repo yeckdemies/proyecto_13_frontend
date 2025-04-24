@@ -17,7 +17,7 @@ const VehiculosTable = () => {
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 }); // Paginación por defecto con 15
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
 
   const cargarVehiculos = async () => {

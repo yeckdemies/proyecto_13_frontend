@@ -18,7 +18,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (open) {
-      timeoutRef.current = setTimeout(() => setShowText(true), 200); // espera a que termine la animación
+      timeoutRef.current = setTimeout(() => setShowText(true), 200);
     } else {
       clearTimeout(timeoutRef.current);
       setShowText(false);
