@@ -37,7 +37,7 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     for (const key in data) {
       if (key === 'permisoCirculacion') {
         if (data[key]?.[0]) {
-          formData.append(key, data[key][0]); // 👈 solo el archivo
+          formData.append(key, data[key][0]);
         }
       } else {
         formData.append(key, data[key]);
