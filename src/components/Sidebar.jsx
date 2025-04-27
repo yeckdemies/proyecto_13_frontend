@@ -30,9 +30,6 @@ const Sidebar = () => {
     { to: '/', label: 'Dashboard', icon: <HomeIcon className="w-6 h-6" /> },
     { to: '/vehiculos', label: 'Vehículos', icon: <TruckIcon className="w-6 h-6" /> },
     { to: '/conductores', label: 'Conductores', icon: <UserGroupIcon className="w-6 h-6" /> },
-    { to: '/metodos-pago', label: 'Métodos de pago', icon: <CreditCardIcon className="w-6 h-6" /> },
-    { to: '/sanciones', label: 'Sanciones', icon: <ExclamationTriangleIcon className="w-6 h-6" /> },
-    { to: '/mantenimientos', label: 'Mantenimientos', icon: <WrenchScrewdriverIcon className="w-6 h-6" /> },
     { to: '/proveedores', label: 'Proveedores', icon: <BuildingStorefrontIcon className="w-6 h-6" /> },
   ];
 
