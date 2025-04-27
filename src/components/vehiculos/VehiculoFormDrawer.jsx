@@ -13,7 +13,10 @@ const VehiculoFormDrawer = ({ isOpen, onClose, vehiculo }) => {
         <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-xl">×</button>
       </div>
       <div className="flex-1 overflow-y-auto px-4 pb-6">
-        <VehiculoForm vehiculo={vehiculo} onClose={onClose} />
+      <VehiculoForm
+        vehiculo={vehiculo}
+        onClose={onClose}
+      />
       </div>
     </div>
   );

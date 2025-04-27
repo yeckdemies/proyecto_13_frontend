@@ -212,37 +212,12 @@ const VehiculosTable = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span>Página</span>
+          <span className="pl-2">Página</span>
           <strong>{table.getState().pagination.pageIndex + 1}</strong>
-          <span>de {table.getPageCount()}</span>
+          <span className="pr-2">de {table.getPageCount()}</span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min={1}
-            max={table.getPageCount()}
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              table.setPageIndex(page);
-            }}
-            className="w-16 border rounded px-2 py-1"
-          />
-          <select
-            className="border rounded px-2 py-1"
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => table.setPageSize(Number(e.target.value))}
-          >
-            {[5, 10, 15, 20, 50].map((size) => (
-              <option key={size} value={size}>
-                {size} filas
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2">
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
