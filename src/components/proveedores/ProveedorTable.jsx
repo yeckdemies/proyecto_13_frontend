@@ -110,7 +110,7 @@ const ProveedorTable = () => {
           {Object.keys(rowSelection).length > 0 && (
             <button
               onClick={eliminarSeleccionados}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
             >
               Eliminar seleccionados
             </button>
@@ -120,7 +120,7 @@ const ProveedorTable = () => {
               setProveedorSeleccionado(null);
               setShowForm(true);
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Añadir Proveedor
           </button>
@@ -180,14 +180,14 @@ const ProveedorTable = () => {
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
-            className="px-2 py-1 border rounded disabled:opacity-40"
+            className="cursor-pointer px-2 py-1 border rounded disabled:opacity-40"
           >
             {'<<'}
           </button>
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-2 py-1 border rounded disabled:opacity-40"
+            className="cursor-pointer px-2 py-1 border rounded disabled:opacity-40"
           >
             {'<'}
           </button>
@@ -203,14 +203,14 @@ const ProveedorTable = () => {
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-2 py-1 border rounded disabled:opacity-40"
+            className="cursor-pointer px-2 py-1 border rounded disabled:opacity-40"
           >
             {'>'}
           </button>
           <button
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
-            className="px-2 py-1 border rounded disabled:opacity-40"
+            className="cursor-pointer px-2 py-1 border rounded disabled:opacity-40"
           >
             {'>>'}
           </button>

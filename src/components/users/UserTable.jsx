@@ -7,27 +7,27 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
-import { getConductores, deleteConductor } from '../../api/conductoresService';
-import ConductorFormDrawer from './ConductorFormDrawer';
+import { getUsers, deleteUser } from '../../api/userService';
+import UserFormDrawer from './UserFormDrawer';
 import { toast } from 'react-toastify';
 
-const ConductorTable = () => {
-  const [conductores, setConductores] = useState([]);
-  const [conductorSeleccionado, setConductorSeleccionado] = useState(null);
+const UserTable = () => {
+  const [users, setUsers] = useState([]);
+  const [userSeleccionado, setUserSeleccionado] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
 
-  const cargarConductores = async () => {
-    const res = await getConductores();
-    if (res.success) setConductores(res.data);
-    else toast.error(res.message || 'Error al obtener conductores');
+  const cargarUsers = async () => {
+    const res = await getUsers();
+    if (res.success) setUsers(res.data);
+    else toast.error(res.message || 'Error al obtener users');
   };
 
   useEffect(() => {
-    cargarConductores();
+    cargarUsers();
   }, []);
 
   const columns = useMemo(() => [
@@ -52,19 +52,13 @@ const ConductorTable = () => {
       enableColumnFilter: false,
       size: 40
     },
-    { header: 'DNI', accessorKey: 'dni' },
-    { header: 'Nombre', accessorKey: 'nombre' },
-    { header: 'fechaNacimiento', accessorKey: 'fechaNacimiento' },
-    { header: 'telefono', accessorKey: 'telefono' },
+    { header: 'Username', accessorKey: 'userName' },
     { header: 'Email', accessorKey: 'email' },
-    { header: 'Ciudad', accessorKey: 'ciudad' },
-    { header: 'Provincia', accessorKey: 'provincia' },
-    { header: 'Direccion', accessorKey: 'direccion' },
-    { header: 'Código Postal', accessorKey: 'codigoPostal' },
+    { header: 'Rol', accessorKey: 'role' },
   ], []);
 
   const table = useReactTable({
-    data: conductores,
+    data: users,
     columns,
     state: { rowSelection, pagination, columnFilters, sorting },
     onRowSelectionChange: setRowSelection,
@@ -82,21 +76,21 @@ const ConductorTable = () => {
     const seleccionados = table.getSelectedRowModel().rows;
     if (!seleccionados.length) return;
 
-    if (!confirm(`¿Eliminar ${seleccionados.length} conductor(es)?`)) return;
+    if (!confirm(`¿Eliminar ${seleccionados.length} user(s)?`)) return;
 
     for (const row of seleccionados) {
-      await deleteConductor(row.original._id);
+      await deleteUser(row.original._id);
     }
 
-    toast.success('Conductores eliminados correctamente');
+    toast.success('Users eliminados correctamente');
     table.resetRowSelection();
-    await cargarConductores();
+    await cargarUsers();
   };
 
-  const abrirEdicion = (conductor) => {
-    setConductorSeleccionado({
-      ...conductor,
-      fechaNacimiento: conductor.fechaNacimiento?.substring(0, 10),
+  const abrirEdicion = (user) => {
+    setUserSeleccionado({
+      ...user,
+      fechaNacimiento: user.fechaNacimiento?.substring(0, 10),
     });
     setShowForm(true);
   };
@@ -104,7 +98,7 @@ const ConductorTable = () => {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Conductores</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Usuarios</h1>
         <div className="flex gap-2">
           {Object.keys(rowSelection).length > 0 && (
             <button
@@ -116,12 +110,12 @@ const ConductorTable = () => {
           )}
           <button
             onClick={() => {
-              setConductorSeleccionado(null);
+              setUserSeleccionado(null);
               setShowForm(true);
             }}
             className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Añadir Conductor
+            Añadir User
           </button>
         </div>
       </div>
@@ -216,17 +210,17 @@ const ConductorTable = () => {
         </div>
       </div>
 
-      <ConductorFormDrawer
+      <UserFormDrawer
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);
-          setConductorSeleccionado(null);
-          await cargarConductores();
+          setUserSeleccionado(null);
+          await cargarUsers();
         }}
-        conductor={conductorSeleccionado}
+        user={userSeleccionado}
       />
     </div>
   );
 };
 
-export default ConductorTable;
+export default UserTable;

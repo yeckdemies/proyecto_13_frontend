@@ -45,7 +45,7 @@ const Sidebar = () => {
             <Link
               key={to}
               to={to}
-              className={`flex items-center gap-4 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md transition 
+              className={`cursor-pointer flex items-center gap-4 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md transition 
                 ${location.pathname === to ? 'bg-blue-50 text-blue-600' : ''}
               `}
             >

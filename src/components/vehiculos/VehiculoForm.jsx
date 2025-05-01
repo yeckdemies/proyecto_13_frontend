@@ -82,7 +82,7 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         <SelectField label="Conductor" name="conductor" options={conductores.map(c => ({ value: c._id, label: c.nombre }))} register={register} required errors={errors} />
         </div>
       <div className="flex justify-end pt-4">
-        <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
+        <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
         Guardar
         </button>
       </div>

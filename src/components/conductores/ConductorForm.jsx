@@ -29,8 +29,6 @@ const ConductorForm = ({ conductor, onClose }) => {
     }
   };
 
-;;;;;;
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 text-sm">
       <div className="flex flex-col gap-4">
@@ -45,7 +43,7 @@ const ConductorForm = ({ conductor, onClose }) => {
         <InputField label="Código Postal" name="codigoPostal" type="number" register={register} />
       </div>
       <div className="flex justify-end pt-4">
-        <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
+        <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
         Guardar
         </button>
       </div>

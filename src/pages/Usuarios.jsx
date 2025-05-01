@@ -1,10 +1,11 @@
-const Usuarios = () => {
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-4">Usuarios</h1>
-      <p>Bienvenido Usuarios.</p>
-    </div>
-  )
-}
+import UsersTable from '../components/users/UserTable';
 
-export default Usuarios
+const Users = () => {
+  return (
+    <div className="p-6">
+      <UsersTable />
+    </div>
+  );
+};
+
+export default Users;

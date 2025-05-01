@@ -1,5 +1,65 @@
 import apiClient from './apiClient';
 
+export const getUsers = async () => {
+  try {
+    const { data } = await apiClient.get('/users');
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al cargar users'
+    };
+  }
+};
+
+export const getUserById = async (id) => {
+  try {
+    const { data } = await apiClient.get(`/users/${id}`);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al obtener vehículo'
+    };
+  }
+};
+
+export const createUser = async (user) => {
+  try {
+    const { data } = await apiClient.post('/users/createUser', user);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al crear el user'
+    };
+  }
+};
+
+export const updateUser = async (id, user) => {
+  try {
+    const { data } = await apiClient.put(`/users/${id}`, user);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al actualizar el user'
+    };
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const { data } = await apiClient.delete(`/users/${id}`);
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al eliminar el user'
+    };
+  }
+};
+
 export const loginUser = async (userName, password) => {
   try {
     const { data } = await apiClient.post('/users/login', { userName, password });
