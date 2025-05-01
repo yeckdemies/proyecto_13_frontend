@@ -44,6 +44,7 @@ const ProveedorTable = () => {
         <input
           type="checkbox"
           checked={row.getIsSelected()}
+          onClick={(e) => e.stopPropagation()} // <-- evita doble acción
           onChange={row.getToggleSelectedHandler()}
         />
       ),
@@ -51,15 +52,17 @@ const ProveedorTable = () => {
       enableColumnFilter: false,
       size: 40
     },
-    { header: 'DNI', accessorKey: 'dni' },
+    { header: 'NIF', accessorKey: 'nif' },
     { header: 'Nombre', accessorKey: 'nombre' },
-    { header: 'fechaNacimiento', accessorKey: 'fechaNacimiento' },
+    { header: 'Razón Social', accessorKey: 'razonSocial' },
     { header: 'telefono', accessorKey: 'telefono' },
     { header: 'Email', accessorKey: 'email' },
+    { header: 'Página Web', accessorKey: 'paginaWeb' },
+    { header: 'Direccion', accessorKey: 'direccion' },
     { header: 'Ciudad', accessorKey: 'ciudad' },
     { header: 'Provincia', accessorKey: 'provincia' },
-    { header: 'Direccion', accessorKey: 'direccion' },
     { header: 'Código Postal', accessorKey: 'codigoPostal' },
+    { header: 'Tipo de Proveedor', accessorKey: 'tipoProveedor' }
   ], []);
 
   const table = useReactTable({
@@ -155,9 +158,10 @@ const ProveedorTable = () => {
           <tbody>
             {table.getRowModel().rows.map((row) => (
               <tr
-                key={row.id}
-                className="hover:bg-gray-50 transition cursor-pointer"
-                onDoubleClick={() => abrirEdicion(row.original)}
+              key={row.id}
+              className={`hover:bg-gray-50 transition cursor-pointer ${row.getIsSelected() ? 'bg-blue-50' : ''}`}
+              onClick={row.getToggleSelectedHandler()}
+              onDoubleClick={() => abrirEdicion(row.original)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-2 border-b border-gray-200 whitespace-nowrap">

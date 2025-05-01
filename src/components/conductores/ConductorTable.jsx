@@ -44,6 +44,7 @@ const ConductorTable = () => {
         <input
           type="checkbox"
           checked={row.getIsSelected()}
+          onClick={(e) => e.stopPropagation()}
           onChange={row.getToggleSelectedHandler()}
         />
       ),
@@ -157,7 +158,8 @@ const ConductorTable = () => {
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                className="hover:bg-gray-50 transition cursor-pointer"
+                className={`hover:bg-gray-50 transition cursor-pointer ${row.getIsSelected() ? 'bg-blue-50' : ''}`}
+                onClick={row.getToggleSelectedHandler()}
                 onDoubleClick={() => abrirEdicion(row.original)}
               >
                 {row.getVisibleCells().map((cell) => (

@@ -7,13 +7,14 @@ import Proveedores from './pages/Proveedores'
 import Login from './pages/Login'
 import Usuarios from './pages/Usuarios'
 import ProtectedRoute from './components/ProtectedRoute';
+import useAutoLogout from './hooks/useAutoLogout';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 const App = () => {
+  useAutoLogout();
+
   return (
     <>
       <Routes>

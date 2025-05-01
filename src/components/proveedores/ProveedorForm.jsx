@@ -29,16 +29,12 @@ const ProveedorForm = ({ proveedor, onClose }) => {
     }
   };
 
-;;;;;;
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 text-sm">
       <div className="flex flex-col gap-4">
-      tipo
         <InputField label="NIF" name="nif" register={register} required errors={errors} />
         <InputField label="Nombre" name="nombre" register={register} required errors={errors} />
         <InputField label="Razón Social" name="razonSocial" register={register} required errors={errors} />
-        <InputField label="Fecha de Nacimiento" name="fechaNacimiento" type="date" register={register} />
         <InputField label="Teléfono" name="telefono" type="number" register={register} />
         <InputField label="Email" name="email" type="email" register={register} required errors={errors} />
         <InputField label="Página Web" name="paginaWeb" type="url" register={register} required errors={errors} />
