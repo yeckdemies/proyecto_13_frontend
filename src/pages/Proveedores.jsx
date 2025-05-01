@@ -1,10 +1,11 @@
+import ProveedoresTable from '../components/proveedores/ProveedorTable';
+
 const Proveedores = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-4">Proveedores</h1>
-      <p>Bienvenido Proveedores.</p>
+    <div className="p-6">
+      <ProveedoresTable />
     </div>
-  )
-}
+  );
+};
 
-export default Proveedores
+export default Proveedores;

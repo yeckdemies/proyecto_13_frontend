@@ -1,8 +1,8 @@
-import VehiculoForm from './VehiculoForm';
+import ConductorForm from './ConductorForm';
 import { useRef } from 'react';
 import { useEffect } from 'react';
 
-const VehiculoFormDrawer = ({ isOpen, onClose, vehiculo }) => {
+const ConductorFormDrawer = ({ isOpen, onClose, conductor }) => {
   const drawerRef = useRef(null);
 
   useEffect(() => {
@@ -30,13 +30,13 @@ const VehiculoFormDrawer = ({ isOpen, onClose, vehiculo }) => {
     >
       <div className="flex justify-between items-center px-4 py-5 border-b border-gray-200 bg-gray-50 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-800">
-          {vehiculo ? 'Editar Vehículo' : 'Nuevo Vehículo'}
+          {conductor ? 'Editar Conductor' : 'Nuevo Conductor'}
         </h2>
         <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-xl">×</button>
       </div>
       <div className="flex-1 overflow-y-auto px-4 pb-6">
-      <VehiculoForm
-        vehiculo={vehiculo}
+      <ConductorForm
+        conductor={conductor}
         onClose={onClose}
       />
       </div>
@@ -44,4 +44,4 @@ const VehiculoFormDrawer = ({ isOpen, onClose, vehiculo }) => {
   );
 };
 
-export default VehiculoFormDrawer;
+export default ConductorFormDrawer;

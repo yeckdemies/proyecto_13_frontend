@@ -1,10 +1,11 @@
+import ConductoresTable from '../components/conductores/ConductorTable';
+
 const Conductores = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-4">Conductores</h1>
-      <p>Bienvenido Conductores.</p>
+    <div className="p-6">
+      <ConductoresTable />
     </div>
-  )
-}
+  );
+};
 
-export default Conductores
+export default Conductores;

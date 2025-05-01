@@ -4,10 +4,8 @@ import {
   HomeIcon,
   TruckIcon,
   UserGroupIcon,
-  CreditCardIcon,
-  ExclamationTriangleIcon,
-  WrenchScrewdriverIcon,
-  BuildingStorefrontIcon,
+  WalletIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 
 const Sidebar = () => {
@@ -30,7 +28,8 @@ const Sidebar = () => {
     { to: '/', label: 'Dashboard', icon: <HomeIcon className="w-6 h-6" /> },
     { to: '/vehiculos', label: 'Vehículos', icon: <TruckIcon className="w-6 h-6" /> },
     { to: '/conductores', label: 'Conductores', icon: <UserGroupIcon className="w-6 h-6" /> },
-    { to: '/proveedores', label: 'Proveedores', icon: <BuildingStorefrontIcon className="w-6 h-6" /> },
+    { to: '/proveedores', label: 'Proveedores', icon: <WalletIcon className="w-6 h-6" /> },
+    { to: '/usuarios', label: 'Usuarios', icon: <UserIcon className="w-6 h-6" /> },
   ];
 
   return (

@@ -5,10 +5,12 @@ import Vehiculos from './pages/Vehiculos'
 import Conductores from './pages/Conductores'
 import Proveedores from './pages/Proveedores'
 import Login from './pages/Login'
+import Usuarios from './pages/Usuarios'
 import ProtectedRoute from './components/ProtectedRoute';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const App = () => {
@@ -28,6 +30,7 @@ const App = () => {
           <Route path="vehiculos" element={<Vehiculos />} />
           <Route path="conductores" element={<Conductores />} />
           <Route path="proveedores" element={<Proveedores />} />
+          <Route path="usuarios" element={<Usuarios />} />
         </Route>
       </Routes>
 

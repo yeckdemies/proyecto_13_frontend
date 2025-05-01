@@ -64,7 +64,6 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         <SelectField label="Tipo de Vehículo" name="tipoVehiculo" options={['Turismo', 'SUV', 'Furgoneta']} register={register} required errors={errors} />
         <InputField label="Matrícula" name="matricula" register={register} required errors={errors} />
         <InputField label="Bastidor" name="bastidor" register={register} required errors={errors} />
-        <SelectField label="Propiedad" name="propiedad" options={['Renting', 'Propio']} register={register} required errors={errors} />
         <SelectField label="Estado" name="estado" options={['Activo', 'Inactivo', 'Taller']} register={register} required errors={errors} />
         <SelectField label="Tipo de Combustible" name="tipoCombustible" options={['Diesel', 'Gasolina', 'Diesel + ADV', 'Eléctrico', 'Gas']} register={register} required errors={errors} />
       {!vehiculo && (
