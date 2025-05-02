@@ -44,7 +44,7 @@ const ProveedorTable = () => {
         <input
           type="checkbox"
           checked={row.getIsSelected()}
-          onClick={(e) => e.stopPropagation()} // <-- evita doble acción
+          onClick={(e) => e.stopPropagation()}
           onChange={row.getToggleSelectedHandler()}
         />
       ),

@@ -13,7 +13,14 @@ const Login = () => {
     const res = await loginUser(userName, password);
 
     if (res.success) {
-      navigate('/');
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify(res.user));
+
+      if (res.user.mustChangePassword) {
+        navigate('/CambiarPassword');
+      } else {
+        navigate('/');
+      }
     } else {
       setErrorMsg(res.message);
     }

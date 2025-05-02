@@ -7,58 +7,85 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
-import { getUsers, deleteUser } from '../../api/userService';
-import UserFormDrawer from './UserFormDrawer';
+import { getReservas, cancelarReserva, reactivarReserva } from '../../api/reservasService';
+import ReservaFormDrawer from './ReservaFormDrawer';
+import AppModal from '../ui/AppModal';
 import { toast } from 'react-toastify';
 
-const UserTable = () => {
-  const [users, setUsers] = useState([]);
-  const [userSeleccionado, setUserSeleccionado] = useState(null);
+const ReservasTable = () => {
+  const [reservas, setReservas] = useState([]);
+  const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [reservaACancelar, setReservaACancelar] = useState(null);
+  const [showReactivarModal, setShowReactivarModal] = useState(false);
 
-  const cargarUsers = async () => {
-    const res = await getUsers();
-    if (res.success) setUsers(res.data);
-    else toast.error(res.message || 'Error al obtener users');
+  const cargarReservas = async () => {
+    const res = await getReservas();
+    if (res.success) setReservas(res.data);
+    else toast.error(res.message || 'Error al obtener reservas');
   };
 
   useEffect(() => {
-    cargarUsers();
+    cargarReservas();
   }, []);
 
   const columns = useMemo(() => [
+    { header: 'Vehículo', accessorKey: 'vehiculo.matricula' },
+    { header: 'Conductor', accessorKey: 'conductor.nombre' },
+    { header: 'Inicio', accessorKey: 'fechaInicio' },
+    { header: 'Fin', accessorKey: 'fechaFin' },
+    { header: 'Estado', accessorKey: 'estado' },
     {
-      id: 'select',
-      header: ({ table }) => (
-        <input
-          type="checkbox"
-          checked={table.getIsAllPageRowsSelected()}
-          onChange={table.getToggleAllPageRowsSelectedHandler()}
-        />
-      ),
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          checked={row.getIsSelected()}
-          onClick={(e) => e.stopPropagation()}
-          onChange={row.getToggleSelectedHandler()}
-        />
-      ),
-      enableSorting: false,
+      id: 'acciones',
+      header: '',
+      accessorKey: 'acciones',
       enableColumnFilter: false,
-      size: 40
-    },
-    { header: 'Username', accessorKey: 'userName' },
-    { header: 'Email', accessorKey: 'email' },
-    { header: 'Rol', accessorKey: 'role' },
+      enableSorting: false,
+      cell: ({ row }) => {
+        const estado = row.original.estado;
+        if (estado === 'Activa') {
+          return (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setReservaACancelar(row.original);
+                setShowModal(true);
+              }}
+              className="cursor-pointer text-red-600 text-lg font-bold"
+              title="Cancelar reserva"
+            >
+              ❌
+            </button>
+          );
+        } else if (estado === 'Cancelada') {
+          return (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setReservaACancelar(row.original);
+                setShowReactivarModal(true);
+              }}
+              className="cursor-pointer text-green-600 text-lg font-bold"
+              title="Reactivar reserva"
+            >
+              🔄
+            </button>
+          );
+        } else {
+          return '';
+        }
+      }
+    }
+    
   ], []);
 
   const table = useReactTable({
-    data: users,
+    data: reservas,
     columns,
     state: { rowSelection, pagination, columnFilters, sorting },
     onRowSelectionChange: setRowSelection,
@@ -72,36 +99,13 @@ const UserTable = () => {
     enableRowSelection: true,
   });
 
-  const eliminarSeleccionados = async () => {
-    const seleccionados = table.getSelectedRowModel().rows;
-    if (!seleccionados.length) return;
-  
-    if (!confirm(`¿Eliminar ${seleccionados.length} user(s)?`)) return;
-  
-    const resultados = await Promise.all(
-      seleccionados.map((row) => deleteUser(row.original._id))
-    );
-  
-    const exitosos = resultados.filter(r => r.success);
-    const fallidos = resultados.filter(r => !r.success);
-  
-    if (exitosos.length) {
-      toast.success(`Se eliminaron ${exitosos.length} usuario(s) correctamente`);
-    }
-  
-    if (fallidos.length) {
-      toast.error(`Error al eliminar ${fallidos.length} usuario(s): ${fallidos.map(f => f.message).join(', ')}`);
-    }
-  
-    table.resetRowSelection();
-    await cargarUsers();
-  };
-  
-
-  const abrirEdicion = (user) => {
-    setUserSeleccionado({
-      ...user,
-      fechaNacimiento: user.fechaNacimiento?.substring(0, 10),
+  const abrirEdicion = (reserva) => {
+    setReservaSeleccionada({
+      ...reserva,
+      fechaInicio: reserva.fechaInicio?.substring(0, 10),
+      fechaFin: reserva.fechaFin?.substring(0, 10),
+      vehiculo: reserva.vehiculo?._id ?? reserva.vehiculo,
+      conductor: reserva.conductor?._id ?? reserva.conductor,
     });
     setShowForm(true);
   };
@@ -109,26 +113,16 @@ const UserTable = () => {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Usuarios</h1>
-        <div className="flex gap-2">
-          {Object.keys(rowSelection).length > 0 && (
-            <button
-              onClick={eliminarSeleccionados}
-              className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-            >
-              Eliminar seleccionados
-            </button>
-          )}
-          <button
-            onClick={() => {
-              setUserSeleccionado(null);
-              setShowForm(true);
-            }}
-            className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Añadir User
-          </button>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-800">Reservas</h1>
+        <button
+          onClick={() => {
+            setReservaSeleccionada(null);
+            setShowForm(true);
+          }}
+          className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Añadir Reserva
+        </button>
       </div>
 
       <div className="overflow-x-auto">
@@ -221,17 +215,68 @@ const UserTable = () => {
         </div>
       </div>
 
-      <UserFormDrawer
+      <ReservaFormDrawer
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);
-          setUserSeleccionado(null);
-          await cargarUsers();
+          setReservaSeleccionada(null);
+          await cargarReservas();
         }}
-        user={userSeleccionado}
+        reserva={reservaSeleccionada}
+      />
+
+      <AppModal
+        isOpen={showModal}
+        type="prompt"
+        title="Cancelar reserva"
+        label="Motivo de la cancelación"
+        inputRequired
+        confirmText="Cancelar"
+        cancelText="Cerrar"
+        onCancel={() => {
+          setShowModal(false);
+          setReservaACancelar(null);
+        }}
+        onConfirm={async (motivo) => {
+          if (!reservaACancelar) return;
+          const res = await cancelarReserva(reservaACancelar._id, motivo);
+          if (res.success) {
+            toast.success('Reserva cancelada');
+            await cargarReservas();
+          } else {
+            toast.error(res.message || 'Error al cancelar reserva');
+          }
+          setShowModal(false);
+          setReservaACancelar(null);
+        }}
+      />
+
+      <AppModal
+        isOpen={showReactivarModal}
+        type="confirm"
+        title="Reactivar reserva"
+        message="¿Estás seguro de que deseas reactivar esta reserva?"
+        confirmText="Reactivar"
+        cancelText="Cancelar"
+        onCancel={() => {
+          setShowReactivarModal(false);
+          setReservaACancelar(null);
+        }}
+        onConfirm={async () => {
+          if (!reservaACancelar) return;
+          const res = await reactivarReserva(reservaACancelar._id);
+          if (res.success) {
+            toast.success('Reserva reactivada');
+            await cargarReservas();
+          } else {
+            toast.error(res.message || 'Error al reactivar reserva');
+          }
+          setShowReactivarModal(false);
+          setReservaACancelar(null);
+        }}
       />
     </div>
   );
 };
 
-export default UserTable;
+export default ReservasTable;

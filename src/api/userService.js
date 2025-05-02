@@ -24,14 +24,23 @@ export const getUserById = async (id) => {
   }
 };
 
-export const createUser = async (user) => {
+export const createUser = async ({ userName, email, password = null, role }) => {
   try {
-    const { data } = await apiClient.post('/users/createUser', user);
-    return { success: true, data };
+    const { data } = await apiClient.post('/users/register', {
+      userName,
+      email,
+      password,
+      role
+    });
+    return {
+      success: true,
+      user: data.user,
+      message: data.message
+    };
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al crear el user'
+      message: err.response?.data?.message || 'Error al crear el usuario'
     };
   }
 };
@@ -50,12 +59,13 @@ export const updateUser = async (id, user) => {
 
 export const deleteUser = async (id) => {
   try {
-    const { data } = await apiClient.delete(`/users/${id}`);
-    return { success: true, data };
+    await apiClient.delete(`/users/deleteUser/${id}`);
+    return { success: true, id };
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al eliminar el user'
+      message: err.response?.data?.message || 'Error al eliminar el user',
+      id
     };
   }
 };
@@ -63,22 +73,20 @@ export const deleteUser = async (id) => {
 export const loginUser = async (userName, password) => {
   try {
     const { data } = await apiClient.post('/users/login', { userName, password });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    return { success: true, user: data.user };
+
+    return {
+      success: true,
+      user: data.user,
+      token: data.token
+    };
   } catch (err) {
-    return { success: false, message: err.response?.data?.message || 'Error al iniciar sesión' };
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al iniciar sesión'
+    };
   }
 };
 
-export const registerUser = async (userName, email, password) => {
-  try {
-    const { data } = await apiClient.post('/users/register', { userName, email, password });
-    return loginUser(data.user.userName, password);
-  } catch (err) {
-    return { success: false, message: err.response?.data?.message || 'Error al registrar usuario' };
-  }
-};
 
 export const validateUser = async () => {
   try {
@@ -89,5 +97,14 @@ export const validateUser = async () => {
     localStorage.removeItem('user');
     console.error('Error al validar usuario:', err);
     return { success: false, message: 'Token inválido' };
+  }
+};
+
+export const changePassword = async (data) => {
+  try {
+    const res = await apiClient.put('/users/changePassword', data);
+    return { success: true, ...res.data };
+  } catch (error) {
+    return { success: false, message: error.response?.data?.message || 'Error desconocido' };
   }
 };

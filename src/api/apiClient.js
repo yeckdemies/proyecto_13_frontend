@@ -13,6 +13,7 @@ apiClient.interceptors.request.use(config => {
     delete config.headers['Content-Type'];
   }
 
+  console.log(`[API CALL] ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
   return config;
 });
 

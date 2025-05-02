@@ -6,6 +6,9 @@ import {
   UserGroupIcon,
   WalletIcon,
   UserIcon,
+  BookmarkIcon,
+  DocumentPlusIcon,
+  CalendarDateRangeIcon,
 } from '@heroicons/react/24/outline'
 
 const Sidebar = () => {
@@ -30,6 +33,7 @@ const Sidebar = () => {
     { to: '/conductores', label: 'Conductores', icon: <UserGroupIcon className="w-6 h-6" /> },
     { to: '/proveedores', label: 'Proveedores', icon: <WalletIcon className="w-6 h-6" /> },
     { to: '/usuarios', label: 'Usuarios', icon: <UserIcon className="w-6 h-6" /> },
+    { to: '/reservas', label: 'Reservas', icon: <CalendarDateRangeIcon className="w-6 h-6" /> },
   ];
 
   return (
