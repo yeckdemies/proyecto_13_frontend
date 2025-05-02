@@ -31,9 +31,9 @@ const Sidebar = () => {
     { to: '/', label: 'Dashboard', icon: <HomeIcon className="w-6 h-6" /> },
     { to: '/vehiculos', label: 'Vehículos', icon: <TruckIcon className="w-6 h-6" /> },
     { to: '/conductores', label: 'Conductores', icon: <UserGroupIcon className="w-6 h-6" /> },
+    { to: '/reservas', label: 'Reservas', icon: <CalendarDateRangeIcon className="w-6 h-6" /> },
     { to: '/proveedores', label: 'Proveedores', icon: <WalletIcon className="w-6 h-6" /> },
     { to: '/usuarios', label: 'Usuarios', icon: <UserIcon className="w-6 h-6" /> },
-    { to: '/reservas', label: 'Reservas', icon: <CalendarDateRangeIcon className="w-6 h-6" /> },
   ];
 
   return (

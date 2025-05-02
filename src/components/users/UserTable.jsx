@@ -21,9 +21,10 @@ const UserTable = () => {
   const [sorting, setSorting] = useState([]);
 
   const cargarUsers = async () => {
-    const res = await getUsers();
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const res = await getUsers(currentUser?.email);
     if (res.success) setUsers(res.data);
-    else toast.error(res.message || 'Error al obtener users');
+    else toast.error(res.message || 'Error al obtener los usuarios');
   };
 
   useEffect(() => {
@@ -75,28 +76,26 @@ const UserTable = () => {
   const eliminarSeleccionados = async () => {
     const seleccionados = table.getSelectedRowModel().rows;
     if (!seleccionados.length) return;
-  
+
     if (!confirm(`¿Eliminar ${seleccionados.length} user(s)?`)) return;
-  
+
     const resultados = await Promise.all(
       seleccionados.map((row) => deleteUser(row.original._id))
     );
-  
+
     const exitosos = resultados.filter(r => r.success);
     const fallidos = resultados.filter(r => !r.success);
-  
     if (exitosos.length) {
       toast.success(`Se eliminaron ${exitosos.length} usuario(s) correctamente`);
     }
-  
+
     if (fallidos.length) {
       toast.error(`Error al eliminar ${fallidos.length} usuario(s): ${fallidos.map(f => f.message).join(', ')}`);
     }
-  
+
     table.resetRowSelection();
     await cargarUsers();
   };
-  
 
   const abrirEdicion = (user) => {
     setUserSeleccionado({
@@ -160,20 +159,28 @@ const UserTable = () => {
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className={`hover:bg-gray-50 transition cursor-pointer ${row.getIsSelected() ? 'bg-blue-50' : ''}`}
-                onClick={row.getToggleSelectedHandler()}
-                onDoubleClick={() => abrirEdicion(row.original)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2 border-b border-gray-200 whitespace-nowrap">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length} className="text-center py-4 text-gray-500">
+                  No hay usuarios disponibles.
+                </td>
               </tr>
-            ))}
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className={`hover:bg-gray-50 transition cursor-pointer ${row.getIsSelected() ? 'bg-blue-50' : ''}`}
+                  onClick={row.getToggleSelectedHandler()}
+                  onDoubleClick={() => abrirEdicion(row.original)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="px-4 py-2 border-b border-gray-200 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

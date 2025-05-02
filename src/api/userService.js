@@ -1,13 +1,14 @@
 import apiClient from './apiClient';
 
-export const getUsers = async () => {
+export const getUsers = async (currentUserEmail) => {
   try {
     const { data } = await apiClient.get('/users');
-    return { success: true, data };
+    const filteredUsers = data.filter(user => user.email !== currentUserEmail);
+    return { success: true, data: filteredUsers };
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al cargar users'
+      message: err.response?.data?.message || 'Error al cargar los usuarios'
     };
   }
 };
