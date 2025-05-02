@@ -76,8 +76,14 @@ const VehiculosTable = () => {
           '-'
         )
     },
-    { header: 'Proveedor', accessorKey: 'proveedor.nombre' },
-    { header: 'Conductor', accessorKey: 'conductor.nombre' },
+    {
+      header: 'Proveedor',
+      accessorFn: row => row.proveedor?.nombre ?? '-'
+    },
+    {
+      header: 'Conductor',
+      accessorFn: row => row.conductor?.nombre ?? '-'
+    }
   ], []);
 
   const table = useReactTable({
