@@ -6,8 +6,6 @@ import {
   UserGroupIcon,
   WalletIcon,
   UserIcon,
-  BookmarkIcon,
-  DocumentPlusIcon,
   CalendarDateRangeIcon,
 } from '@heroicons/react/24/outline'
 
