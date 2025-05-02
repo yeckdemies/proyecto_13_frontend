@@ -41,6 +41,22 @@ const Sidebar = () => {
       className={`h-screen bg-white shadow-md transition-all duration-300 ease-in-out
       ${open ? 'w-64' : 'w-16'} flex flex-col`}
     >
+      {/* Logo */}
+      <div className="relative h-24 flex items-center justify-center">
+        <Link to="/" className="absolute top-5 left-0 right-0 flex justify-center transition-all duration-300"
+          style={{
+            transform: open ? 'translateY(40px)' : 'translateY(0px)'
+          }}
+        >
+          <img
+            src="https://res.cloudinary.com/dszffglcl/image/upload/v1746219984/nbyec04ugqxs7p6nei3z.png"
+            alt="Gestión de Flota"
+            className={`transition-all duration-300 cursor-pointer ${open ? 'w-40' : 'w-10'}`}
+          />
+        </Link>
+      </div>
+
+      {/* Menú */}
       <div className="flex-1 flex flex-col justify-center p-2">
         <nav className="flex flex-col gap-2">
           {menuItems.map(({ to, label, icon }) => (
