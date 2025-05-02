@@ -54,8 +54,8 @@ const ConductorTable = () => {
     },
     { header: 'DNI', accessorKey: 'dni' },
     { header: 'Nombre', accessorKey: 'nombre' },
-    { header: 'fechaNacimiento', accessorKey: 'fechaNacimiento' },
-    { header: 'telefono', accessorKey: 'telefono' },
+    { header: 'Fecha de Nacimiento', accessorKey: 'fechaNacimiento' },
+    { header: 'Teléfono', accessorKey: 'telefono' },
     { header: 'Email', accessorKey: 'email' },
     { header: 'Ciudad', accessorKey: 'ciudad' },
     { header: 'Provincia', accessorKey: 'provincia' },
@@ -225,6 +225,7 @@ const ConductorTable = () => {
       </div>
 
       <ConductorFormDrawer
+        key={conductorSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);

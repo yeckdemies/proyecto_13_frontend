@@ -246,6 +246,7 @@ const VehiculosTable = () => {
       </div>
 
       <VehiculoFormDrawer
+        key={vehiculoSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);

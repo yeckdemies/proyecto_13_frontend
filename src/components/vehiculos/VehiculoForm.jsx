@@ -45,7 +45,6 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
       }
     }
 
-    console.log('formData', formData);
     const res = vehiculo
       ? await updateVehiculo(vehiculo._id, formData)
       : await createVehiculo(formData);

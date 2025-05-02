@@ -226,6 +226,7 @@ const ProveedorTable = () => {
       </div>
 
       <ProveedorFormDrawer
+        key={proveedorSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);

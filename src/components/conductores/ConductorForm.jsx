@@ -1,25 +1,26 @@
 import { useForm } from 'react-hook-form';
 import { createConductor, updateConductor } from '../../api/conductoresService';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const ConductorForm = ({ conductor, onClose }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm();
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    for (const key in data) {
-        formData.append(key, data[key]);
+  useEffect(() => {
+    if (conductor) {
+      reset(conductor || {});
     }
+  }, [conductor, reset]);
 
-    console.log('formData', formData);
+  const onSubmit = async (data) => {
     const res = conductor
-      ? await updateConductor(conductor._id, formData)
-      : await createConductor(formData);
+    ? await updateConductor(conductor._id, data)
+    : await createConductor(data);
 
     if (res.success) {
       toast.success('Conductor guardado correctamente');

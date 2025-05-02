@@ -1,15 +1,19 @@
 import { useForm } from 'react-hook-form';
 import { createUser, updateUser } from '../../api/userService';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const UserForm = ({ user, onClose }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
-  } = useForm({
-    defaultValues: user || {}
-  });
+  } = useForm();
+
+  useEffect(() => {
+    reset(user || {});
+  }, [user, reset]);
 
   const onSubmit = async (data) => {
     const res = user

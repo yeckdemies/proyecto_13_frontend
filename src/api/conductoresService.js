@@ -26,7 +26,7 @@ export const getConductorById = async (id) => {
 
 export const createConductor = async (conductor) => {
   try {
-    const { data } = await apiClient.post('/conductores/createConductor', conductor);
+    const { data } = await apiClient.post('/conductores', conductor);
     return { success: true, data };
   } catch (err) {
     return {

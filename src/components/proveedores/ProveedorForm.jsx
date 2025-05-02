@@ -1,25 +1,26 @@
 import { useForm } from 'react-hook-form';
 import { createProveedor, updateProveedor } from '../../api/proveedoresService';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const ProveedorForm = ({ proveedor, onClose }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm();
 
+  useEffect(() => {
+      if (proveedor) {
+        reset(proveedor || {});
+      }
+    }, [proveedor, reset]);
+
   const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    for (const key in data) {
-        formData.append(key, data[key]);
-    }
-
-    console.log('formData', formData);
-    const res = proveedor
-      ? await updateProveedor(proveedor._id, formData)
-      : await createProveedor(formData);
+      const res = proveedor
+      ? await updateProveedor(proveedor._id, data)
+      : await createProveedor(data);
 
     if (res.success) {
       toast.success('Proveedor guardado correctamente');
@@ -42,7 +43,7 @@ const ProveedorForm = ({ proveedor, onClose }) => {
         <InputField label="Ciudad" name="ciudad" register={register} required errors={errors} />
         <InputField label="Provincia" name="provincia" register={register} required errors={errors} />
         <InputField label="Código Postal" name="codigoPostal" type="number" register={register} />
-        <SelectField label="Tipo de Proveedor" name="tipoProveedor" options={['Renting', 'Tarjeta Combustible', 'Taller']} register={register} required errors={errors} />
+        <SelectField label="Tipo de Proveedor" name="tipo" options={['Renting', 'Tarjeta Combustible', 'Taller']} register={register} required errors={errors} />
       </div>
       <div className="flex justify-end pt-4">
         <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">

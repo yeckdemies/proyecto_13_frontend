@@ -26,7 +26,8 @@ export const getProveedorById = async (id) => {
 
 export const createProveedor = async (proveedor) => {
   try {
-    const { data } = await apiClient.post('/proveedores/createProveedor', proveedor);
+    console.log({proveedor});
+    const { data } = await apiClient.post('/proveedores', proveedor);
     return { success: true, data };
   } catch (err) {
     return {

@@ -224,6 +224,7 @@ const ReservasTable = () => {
       </div>
 
       <ReservaFormDrawer
+        key={reservaSeleccionada?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);

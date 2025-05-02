@@ -100,7 +100,6 @@ const UserTable = () => {
   const abrirEdicion = (user) => {
     setUserSeleccionado({
       ...user,
-      fechaNacimiento: user.fechaNacimiento?.substring(0, 10),
     });
     setShowForm(true);
   };
@@ -125,7 +124,7 @@ const UserTable = () => {
             }}
             className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Añadir User
+            Añadir Usuario
           </button>
         </div>
       </div>
@@ -229,6 +228,7 @@ const UserTable = () => {
       </div>
 
       <UserFormDrawer
+        key={userSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
           setShowForm(false);
