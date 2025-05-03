@@ -120,6 +120,14 @@ const ReservaForm = ({ reserva, onClose }) => {
     const mismoVehiculo = vehiculo === vehiculoOriginal;
     const mismoConductor = conductor === conductorOriginal;
 
+    const fechaIni = new Date(data.fechaInicio);
+    const fechaFin = new Date(data.fechaFin);
+
+    if (fechaIni >= fechaFin) {
+      toast.error('La fecha de fin debe ser posterior a la de inicio');
+      return;
+    }
+
     if (
       !esCancelada &&
       ((!disponibilidad.vehiculoDisponible && !mismoVehiculo) ||
@@ -187,7 +195,15 @@ const ReservaForm = ({ reserva, onClose }) => {
           name="fechaInicio"
           type="date"
           register={register}
-          required
+          rules={{
+            required: 'La fecha de inicio es obligatoria',
+            validate: (value) => {
+              const fecha = new Date(value);
+              const max = new Date('2050-12-31');
+              if (fecha > max) return 'No puede ser posterior al año 2050';
+              return true;
+            }
+          }}
           errors={errors}
           disabled={esCancelada}
         />
@@ -197,7 +213,15 @@ const ReservaForm = ({ reserva, onClose }) => {
           name="fechaFin"
           type="date"
           register={register}
-          required
+          rules={{
+            required: 'La fecha de fin es obligatoria',
+            validate: (value) => {
+              const fecha = new Date(value);
+              const max = new Date('2050-12-31');
+              if (fecha > max) return 'No puede ser posterior al año 2050';
+              return true;
+            }
+          }}
           errors={errors}
           disabled={esCancelada}
         />
