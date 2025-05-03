@@ -7,13 +7,14 @@ import {
   WalletIcon,
   UserIcon,
   CalendarDateRangeIcon,
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/outline';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [showText, setShowText] = useState(false);
   const location = useLocation();
   const timeoutRef = useRef();
+  const sidebarRef = useRef();
 
   useEffect(() => {
     if (open) {
@@ -24,6 +25,14 @@ const Sidebar = () => {
     }
     return () => clearTimeout(timeoutRef.current);
   }, [open]);
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      if (sidebarRef.current && !sidebarRef.current.matches(':hover')) {
+        setOpen(false);
+      }
+    }, 100);
+  };
 
   const menuItems = [
     { to: '/', label: 'Dashboard', icon: <HomeIcon className="w-6 h-6" /> },
@@ -36,8 +45,9 @@ const Sidebar = () => {
 
   return (
     <div
+      ref={sidebarRef}
       onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={handleMouseLeave}
       className={`h-screen bg-white shadow-md transition-all duration-300 ease-in-out
       ${open ? 'w-64' : 'w-16'} flex flex-col`}
     >
