@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   createReserva,
@@ -10,18 +10,6 @@ import { getConductores } from '../../api/conductoresService';
 import { toast } from 'react-toastify';
 
 const ReservaForm = ({ reserva, onClose }) => {
-  const [vehiculos, setVehiculos] = useState([]);
-  const [conductores, setConductores] = useState([]);
-  const [disponibilidad, setDisponibilidad] = useState({
-    vehiculoDisponible: true,
-    conductorDisponible: true
-  });
-  const [isComprobandoDisponibilidad, setIsComprobandoDisponibilidad] = useState(false);
-  const [vehiculoOriginal, setVehiculoOriginal] = useState(null);
-  const [conductorOriginal, setConductorOriginal] = useState(null);
-
-  const esCancelada = reserva?.estado === 'Cancelada';
-
   const {
     register,
     handleSubmit,
@@ -30,68 +18,101 @@ const ReservaForm = ({ reserva, onClose }) => {
     formState: { errors }
   } = useForm();
 
+  const [vehiculos, setVehiculos] = useState([]);
+  const [conductores, setConductores] = useState([]);
+  const [disponibilidad, setDisponibilidad] = useState({
+    vehiculoDisponible: true,
+    conductorDisponible: true
+  });
+  const [isComprobando, setIsComprobando] = useState(false);
+
+  const reservaId = useMemo(() => reserva?._id, [reserva]);
+  const vehiculoOriginal = useMemo(() => reserva?.vehiculo?._id ?? reserva?.vehiculo, [reserva]);
+  const conductorOriginal = useMemo(() => reserva?.conductor?._id ?? reserva?.conductor, [reserva]);
+  const esCancelada = reserva?.estado === 'Cancelada';
+
   const vehiculo = watch('vehiculo');
   const conductor = watch('conductor');
   const fechaInicio = watch('fechaInicio');
   const fechaFin = watch('fechaFin');
 
-  const reservaId = useMemo(() => reserva?._id, [reserva]);
-
   useEffect(() => {
-    (async () => {
-      const vehRes = await getVehiculos();
+    const cargarDatos = async () => {
+      const [vehRes, condRes] = await Promise.all([getVehiculos(), getConductores()]);
       if (vehRes.success) setVehiculos(vehRes.data);
-
-      const condRes = await getConductores();
       if (condRes.success) setConductores(condRes.data);
 
       if (reserva) {
         reset({
-          ...reserva,
-          vehiculo: reserva.vehiculo?._id ?? reserva.vehiculo,
-          conductor: reserva.conductor?._id ?? reserva.conductor,
+          vehiculo: vehiculoOriginal,
+          conductor: conductorOriginal,
           fechaInicio: reserva.fechaInicio?.substring(0, 10),
           fechaFin: reserva.fechaFin?.substring(0, 10),
           motivoCancelacion: reserva.motivoCancelacion || ''
         });
-
-        setVehiculoOriginal(reserva.vehiculo?._id ?? reserva.vehiculo);
-        setConductorOriginal(reserva.conductor?._id ?? reserva.conductor);
       } else {
-        reset({});
-      }
-    })();
-  }, [reserva, reset]);
-
-  useEffect(() => {
-    const comprobar = async () => {
-      if (!vehiculo || !conductor || !fechaInicio || !fechaFin) return;
-
-      setIsComprobandoDisponibilidad(true);
-      try {
-        const res = await comprobarDisponibilidad({
-          id: reservaId,
-          vehiculo,
-          conductor,
-          fechaInicio,
-          fechaFin
+        reset({
+          vehiculo: '',
+          conductor: '',
+          fechaInicio: '',
+          fechaFin: '',
+          motivoCancelacion: ''
         });
-
-        if (res.success) {
-          setDisponibilidad(res.data);
-        } else {
-          toast.error(res.message || 'Error comprobando disponibilidad');
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error('Error inesperado al comprobar disponibilidad');
-      } finally {
-        setIsComprobandoDisponibilidad(false);
       }
     };
 
-    comprobar();
+    cargarDatos();
+  }, [reserva, reset, vehiculoOriginal, conductorOriginal]);
+
+  const verificarDisponibilidad = useCallback(async () => {
+    if (!vehiculo || !conductor || !fechaInicio || !fechaFin) return;
+
+    const hoy = new Date().toISOString().split('T')[0];
+    if (fechaInicio < hoy) {
+      toast.error('La fecha de inicio no puede ser anterior a hoy');
+      return;
+    }
+
+    if (fechaInicio >= fechaFin) {
+      toast.error('La fecha de fin debe ser posterior a la de inicio');
+      return;
+    }
+
+    setIsComprobando(true);
+    try {
+      const res = await comprobarDisponibilidad({
+        id: reservaId,
+        vehiculo,
+        conductor,
+        fechaInicio,
+        fechaFin
+      });
+
+      const valores = res?.data ?? {
+        vehiculoDisponible: true,
+        conductorDisponible: true
+      };
+
+      setDisponibilidad(valores);
+
+      if (!res.success) {
+        toast.error(res.message || 'Error comprobando disponibilidad');
+      }
+    } catch (err) {
+      console.error(err);
+      setDisponibilidad({
+        vehiculoDisponible: true,
+        conductorDisponible: true
+      });
+      toast.error('Error inesperado al comprobar disponibilidad');
+    } finally {
+      setIsComprobando(false);
+    }
   }, [vehiculo, conductor, fechaInicio, fechaFin, reservaId]);
+
+  useEffect(() => {
+    verificarDisponibilidad();
+  }, [verificarDisponibilidad]);
 
   const onSubmit = async (data) => {
     const mismoVehiculo = vehiculo === vehiculoOriginal;
@@ -107,7 +128,7 @@ const ReservaForm = ({ reserva, onClose }) => {
     }
 
     const res = reserva
-      ? await updateReserva(reserva._id, data)
+      ? await updateReserva(reservaId, data)
       : await createReserva(data);
 
     if (res.success) {
@@ -136,7 +157,7 @@ const ReservaForm = ({ reserva, onClose }) => {
           errors={errors}
           disabled={esCancelada}
         />
-        {!isComprobandoDisponibilidad &&
+        {!isComprobando &&
           !disponibilidad.vehiculoDisponible &&
           vehiculo !== vehiculoOriginal &&
           !esCancelada && (
@@ -152,7 +173,7 @@ const ReservaForm = ({ reserva, onClose }) => {
           errors={errors}
           disabled={esCancelada}
         />
-        {!isComprobandoDisponibilidad &&
+        {!isComprobando &&
           !disponibilidad.conductorDisponible &&
           conductor !== conductorOriginal &&
           !esCancelada && (
@@ -180,15 +201,13 @@ const ReservaForm = ({ reserva, onClose }) => {
         />
 
         {esCancelada && (
-          <div className="mt-2">
-            <label className="text-sm font-medium text-gray-700">
-              Motivo de cancelación
-            </label>
+          <div>
+            <label className="text-sm font-medium text-gray-700">Motivo de cancelación</label>
             <textarea
               {...register('motivoCancelacion')}
-              className="mt-1 block w-full rounded-md border px-3 py-2 border-gray-300 shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
               rows={3}
-              placeholder="Describe el motivo si deseas modificarlo..."
+              placeholder="Motivo..."
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         )}
@@ -197,7 +216,7 @@ const ReservaForm = ({ reserva, onClose }) => {
       <div className="flex justify-end pt-4">
         <button
           type="submit"
-          className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition"
+          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 font-medium transition"
         >
           Guardar
         </button>
@@ -206,7 +225,7 @@ const ReservaForm = ({ reserva, onClose }) => {
   );
 };
 
-const InputField = ({ label, name, register, required = false, type = 'text', errors, disabled = false }) => (
+const InputField = ({ label, name, register, required, type = 'text', errors, disabled }) => (
   <div className="flex flex-col">
     <label className="text-sm font-medium text-gray-700">
       {label}{required && <span className="text-red-500"> *</span>}
@@ -215,24 +234,24 @@ const InputField = ({ label, name, register, required = false, type = 'text', er
       type={type}
       disabled={disabled}
       {...register(name, required ? { required: 'Campo requerido' } : {})}
-      className="mt-1 block w-full rounded-md border px-3 py-2 border-gray-300 shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100"
+      className="mt-1 block w-full rounded-md border px-3 py-2 border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
     />
     {errors?.[name] && <p className="text-red-500 text-xs mt-1">{errors[name].message}</p>}
   </div>
 );
 
-const SelectField = ({ label, name, options, register, required = false, errors, disabled = false }) => (
+const SelectField = ({ label, name, options, register, required, errors, disabled }) => (
   <div className="flex flex-col">
     <label className="text-sm font-medium text-gray-700">
       {label}{required && <span className="text-red-500"> *</span>}
     </label>
     <select
-      disabled={disabled}
       {...register(name, required ? { required: 'Campo requerido' } : {})}
-      className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 text-sm bg-white focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100"
+      disabled={disabled}
+      className="mt-1 block w-full rounded-md border px-3 py-2 border-gray-300 shadow-sm text-sm bg-white focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
     >
       <option value="">Seleccionar</option>
-      {options.map((opt) => (
+      {options.map(opt => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>

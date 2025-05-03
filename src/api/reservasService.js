@@ -48,7 +48,10 @@ export const cancelarReserva = async (id, motivoCancelacion = 'Cancelado por el 
 export const comprobarDisponibilidad = async (payload) => {
   try {
     const { data } = await apiClient.post('/reservas/disponibilidad', payload);
-    return { success: true, data };
+    return {
+      success: true,
+      data: data.data // ✅ esto es lo que contiene vehiculoDisponible y conductorDisponible
+    };
   } catch (err) {
     return {
       success: false,
@@ -57,11 +60,15 @@ export const comprobarDisponibilidad = async (payload) => {
   }
 };
 
+
 export const reactivarReserva = async (id) => {
   try {
-    const response = await apiClient.patch(`/reservas/${id}/reactivar`);
-    return { success: true, response };
+    const { data } = await apiClient.patch(`/reservas/${id}/reactivar`);
+    return { success: true, data };
   } catch (error) {
-    return { success: false, message: error.message };
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Error al reactivar reserva'
+    };
   }
 };

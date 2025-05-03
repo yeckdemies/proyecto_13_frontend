@@ -278,7 +278,14 @@ const ReservasTable = () => {
             toast.success('Reserva reactivada');
             await cargarReservas();
           } else {
-            toast.error(res.message || 'Error al reactivar reserva');
+            // 🔍 Mensajes específicos desde backend
+            if (res.message?.includes('vehículo')) {
+              toast.error('No se puede reactivar: el vehículo ya está reservado en ese rango.');
+            } else if (res.message?.includes('conductor')) {
+              toast.error('No se puede reactivar: el conductor ya tiene otra reserva en ese rango.');
+            } else {
+              toast.error(res.message || 'Error al reactivar reserva');
+            }
           }
           setShowReactivarModal(false);
           setReservaACancelar(null);
