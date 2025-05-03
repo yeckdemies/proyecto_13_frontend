@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { changePassword } from '../api/userService';
 import { toast } from 'react-toastify';
-import AppButton from '../components/ui/AppButton';
 
 const CambiarPassword = () => {
   const {
@@ -31,7 +30,7 @@ const CambiarPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-md p-8 max-w-md w-full">
         <h2 className="text-2xl font-semibold mb-6 text-center">Cambiar Contraseña</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -59,9 +58,9 @@ const CambiarPassword = () => {
             )}
           </div>
 
-          <AppButton type="submit" variant="full">
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
             Guardar nueva contraseña
-          </AppButton>
+          </button>
         </form>
       </div>
     </div>

@@ -62,9 +62,11 @@ const Login = () => {
             <p className="text-red-600 text-sm text-center">{errorMsg}</p>
           )}
 
-          <AppButton type="submit" variant="full">
-            Entrar
-          </AppButton>
+          <div className="flex justify-center">
+            <AppButton type="submit" variant="full">
+              Entrar
+            </AppButton>
+          </div>
         </form>
       </div>
     </div>
