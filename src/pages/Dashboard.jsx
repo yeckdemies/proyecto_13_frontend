@@ -106,7 +106,7 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Panel de Control</h1>
 
       {/* Tarjetas métricas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {cards.map((card) => (
           <div key={card.label} className="bg-white rounded-xl shadow p-4 flex items-center gap-4">
             <div className="text-3xl">{card.icon}</div>
