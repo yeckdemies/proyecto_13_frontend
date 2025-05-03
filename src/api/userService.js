@@ -1,5 +1,17 @@
 import apiClient from './apiClient';
 
+export const getAllUsers = async () => {
+  try {
+    const { data } = await apiClient.get('/users');
+    return { success: true, data };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Error al cargar los usuarios'
+    };
+  }
+};
+
 export const getUsers = async (currentUserEmail) => {
   try {
     const { data } = await apiClient.get('/users');
