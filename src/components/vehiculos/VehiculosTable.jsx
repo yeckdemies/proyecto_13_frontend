@@ -52,7 +52,45 @@ const VehiculosTable = () => {
     { header: 'Combustible', accessorKey: 'tipoCombustible' },
     { header: 'Estado', accessorKey: 'estado' },
     { header: 'Coste Mensual', accessorKey: 'costeAlquilerMensual' },
-    { header: 'Fecha ITV', accessorKey: 'fechaVigorItv' },
+    {
+      header: 'Fecha ITV',
+      accessorKey: 'fechaVigorItv',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+      }
+    },
+    {
+      header: 'Inicio Renting',
+      accessorKey: 'fechaInicioContratoRenting',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+      }
+    },
+    {
+      header: 'Fin Renting',
+      accessorKey: 'fechaFinContratoRenting',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+      }
+    },
     {
       header: 'Permiso',
       accessorKey: 'permisoCirculacionUrl',

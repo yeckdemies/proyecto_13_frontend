@@ -39,8 +39,32 @@ const ReservasTable = () => {
   const columns = useMemo(() => [
     { header: 'Vehículo', accessorKey: 'vehiculo.matricula' },
     { header: 'Conductor', accessorKey: 'conductor.nombre' },
-    { header: 'Inicio', accessorKey: 'fechaInicio' },
-    { header: 'Fin', accessorKey: 'fechaFin' },
+    {
+      header: 'Inicio',
+      accessorKey: 'fechaInicio',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+      },
+    },
+    {
+      header: 'Fin',
+      accessorKey: 'fechaFin',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+      },
+    },
     { header: 'Estado', accessorKey: 'estado' },
     {
       id: 'acciones',

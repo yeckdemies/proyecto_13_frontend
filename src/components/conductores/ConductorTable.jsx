@@ -37,6 +37,21 @@ const ConductoresTable = () => {
     },
     { header: 'DNI', accessorKey: 'dni' },
     { header: 'Nombre', accessorKey: 'nombre' },
+    {
+      header: 'Fecha Nacimiento',
+      accessorKey: 'fechaNacimiento',
+      cell: ({ getValue }) => {
+        const raw = getValue();
+        if (!raw) return '—';
+
+        const date = new Date(raw);
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const anio = date.getFullYear();
+
+        return `${dia}/${mes}/${anio}`;
+      },
+    },
     { header: 'Teléfono', accessorKey: 'telefono' },
     { header: 'Email', accessorKey: 'email' },
   ], []);
