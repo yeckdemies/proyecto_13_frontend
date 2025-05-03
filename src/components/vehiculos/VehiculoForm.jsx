@@ -54,28 +54,179 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     }
   };
 
+  const validarFecha = (value) => {
+    const fecha = new Date(value);
+    const min = new Date('2000-01-01');
+    const max = new Date('2050-12-31');
+    if (fecha < min) return 'Fecha mínima: año 2000';
+    if (fecha > max) return 'Fecha máxima: año 2050';
+    return true;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 text-sm">
       <div className="flex flex-col gap-4">
-        <SelectField label="Tipo de Vehículo" name="tipoVehiculo" options={['Turismo', 'SUV', 'Furgoneta']} register={register} required errors={errors} />
-        <InputField label="Matrícula" name="matricula" register={register} required errors={errors} />
-        <InputField label="Bastidor" name="bastidor" register={register} required errors={errors} />
-        <SelectField label="Estado" name="estado" options={['Activo', 'Inactivo', 'Taller']} register={register} required errors={errors} />
-        <SelectField label="Tipo de Combustible" name="tipoCombustible" options={['Diesel', 'Gasolina', 'Diesel + ADV', 'Eléctrico', 'Gas']} register={register} required errors={errors} />
-      {!vehiculo && (
-        <InputField label="Permiso de circulación" name="permisoCirculacion" type="file" register={register} required errors={errors} />
-      )}
-        <InputField label="Ciudad" name="ciudad" register={register} required errors={errors} />
-        <InputField label="Marca" name="marca" register={register} required errors={errors} />
-        <InputField label="Modelo" name="modelo" register={register} required errors={errors} />
-        <InputField label="Año" name="anio" type="number" register={register} required errors={errors} />
-        <InputField label="Color" name="color" register={register} />
-        <InputField label="Fecha ITV" name="fechaVigorItv" type="date" register={register} required errors={errors} />
-        <InputField label="Coste mensual alquiler" name="costeAlquilerMensual" type="number" register={register} />
-        <InputField label="Inicio contrato renting" name="fechaInicioContratoRenting" type="date" register={register} />
-        <InputField label="Fin contrato renting" name="fechaFinContratoRenting" type="date" register={register} />
-        <SelectField label="Proveedor" name="proveedor" options={proveedores.map(p => ({ value: p._id, label: p.nombre }))} register={register} required errors={errors} />
-        </div>
+        <SelectField
+          label="Tipo de Vehículo"
+          name="tipoVehiculo"
+          options={['Turismo', 'SUV', 'Furgoneta']}
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Matrícula"
+          name="matricula"
+          register={register}
+          rules={{
+            required: 'Campo requerido',
+            pattern: {
+              value: /^[0-9]{4}[B-DF-HJ-NP-TV-Z]{3}$/,
+              message: 'Formato inválido (ej. 1234BCD)'
+            }
+          }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Bastidor"
+          name="bastidor"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <SelectField
+          label="Estado"
+          name="estado"
+          options={['Activo', 'Inactivo', 'Taller']}
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <SelectField
+          label="Tipo de Combustible"
+          name="tipoCombustible"
+          options={['Diesel', 'Gasolina', 'Diesel + ADV', 'Eléctrico', 'Gas']}
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        {!vehiculo && (
+          <InputField
+            label="Permiso de circulación"
+            name="permisoCirculacion"
+            type="file"
+            register={register}
+            rules={{ required: 'Campo requerido' }}
+            errors={errors}
+          />
+        )}
+
+        <InputField
+          label="Ciudad"
+          name="ciudad"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Marca"
+          name="marca"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Modelo"
+          name="modelo"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Año"
+          name="anio"
+          type="number"
+          register={register}
+          rules={{
+            required: 'Campo requerido',
+            min: { value: 2000, message: 'Mínimo año 2000' },
+            max: { value: 2050, message: 'Máximo año 2050' }
+          }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Color"
+          name="color"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Fecha ITV"
+          name="fechaVigorItv"
+          type="date"
+          register={register}
+          rules={{
+            required: 'Campo requerido',
+            validate: validarFecha
+          }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Coste mensual alquiler"
+          name="costeAlquilerMensual"
+          type="number"
+          register={register}
+          rules={{ required: 'Campo requerido' }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Inicio contrato renting"
+          name="fechaInicioContratoRenting"
+          type="date"
+          register={register}
+          rules={{
+            required: 'Campo requerido',
+            validate: validarFecha
+          }}
+          errors={errors}
+        />
+
+        <InputField
+          label="Fin contrato renting"
+          name="fechaFinContratoRenting"
+          type="date"
+          register={register}
+          rules={{
+            required: 'Campo requerido',
+            validate: validarFecha
+          }}
+          errors={errors}
+        />
+
+        <SelectField
+          label="Proveedor"
+          name="proveedor"
+          options={proveedores.map(p => ({ value: p._id, label: p.nombre }))}
+          register={register}
+          required
+          errors={errors}
+        />
+
+      </div>
+
       <div className="flex justify-end pt-4">
         <AppButton type="submit" variant="primary">
           Guardar
