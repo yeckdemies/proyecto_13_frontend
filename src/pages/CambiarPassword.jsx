@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { changePassword } from '../api/userService';
 import { toast } from 'react-toastify';
+import AppButton from '../components/ui/AppButton';
 
 const CambiarPassword = () => {
   const {
@@ -58,9 +59,9 @@ const CambiarPassword = () => {
             )}
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+          <AppButton type="submit" variant="full">
             Guardar nueva contraseña
-          </button>
+          </AppButton>
         </form>
       </div>
     </div>

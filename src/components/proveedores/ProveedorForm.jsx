@@ -3,6 +3,7 @@ import { createProveedor, updateProveedor } from '../../api/proveedoresService';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import { InputField, SelectField } from '../forms/FormFields';
+import AppButton from '../ui/AppButton';
 
 const ProveedorForm = ({ proveedor, onClose }) => {
   const {
@@ -47,9 +48,9 @@ const ProveedorForm = ({ proveedor, onClose }) => {
         <SelectField label="Tipo de Proveedor" name="tipo" options={['Renting', 'Tarjeta Combustible', 'Taller']} register={register} required errors={errors} />
       </div>
       <div className="flex justify-end pt-4">
-        <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
-        Guardar
-        </button>
+        <AppButton type="submit" variant="primary">
+          Guardar
+        </AppButton>
       </div>
     </form>
   );

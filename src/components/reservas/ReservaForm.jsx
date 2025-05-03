@@ -9,6 +9,7 @@ import { getVehiculos } from '../../api/vehiculosService';
 import { getConductores } from '../../api/conductoresService';
 import { toast } from 'react-toastify';
 import { InputField, SelectField } from '../forms/FormFields';
+import AppButton from '../ui/AppButton';
 
 const ReservaForm = ({ reserva, onClose }) => {
   const {
@@ -215,12 +216,9 @@ const ReservaForm = ({ reserva, onClose }) => {
       </div>
 
       <div className="flex justify-end pt-4">
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 font-medium transition"
-        >
+        <AppButton type="submit" variant="primary">
           Guardar
-        </button>
+        </AppButton>
       </div>
     </form>
   );

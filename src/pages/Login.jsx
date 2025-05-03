@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { loginUser } from '../api/userService';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import AppButton from '../components/ui/AppButton';
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -61,12 +62,9 @@ const Login = () => {
             <p className="text-red-600 text-sm text-center">{errorMsg}</p>
           )}
 
-          <button
-            type="submit"
-            className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold"
-          >
+          <AppButton type="submit" variant="full">
             Entrar
-          </button>
+          </AppButton>
         </form>
       </div>
     </div>

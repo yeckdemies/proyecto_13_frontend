@@ -4,6 +4,7 @@ import { createVehiculo, updateVehiculo } from '../../api/vehiculosService';
 import { getProveedores } from '../../api/proveedoresService';
 import { toast } from 'react-toastify';
 import { InputField, SelectField } from '../forms/FormFields';
+import AppButton from '../ui/AppButton';
 
 const VehiculoForm = ({ vehiculo, onClose }) => {
   const [proveedores, setProveedores] = useState([]);
@@ -76,9 +77,9 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         <SelectField label="Proveedor" name="proveedor" options={proveedores.map(p => ({ value: p._id, label: p.nombre }))} register={register} required errors={errors} />
         </div>
       <div className="flex justify-end pt-4">
-        <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">
-        Guardar
-        </button>
+        <AppButton type="submit" variant="primary">
+          Guardar
+        </AppButton>
       </div>
     </form>
   );
