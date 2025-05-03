@@ -1,15 +1,17 @@
+import AppButton from "./AppButton";
+
 const TableHeader = ({ title, onAdd, onDelete, showDelete }) => (
   <div className="flex justify-between items-center mb-4">
     <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-    <div className="flex gap-2">
+    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
       {showDelete && (
-        <button onClick={onDelete} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        <AppButton onClick={onDelete} variant="danger" fullWidth>
           Eliminar seleccionados
-        </button>
+        </AppButton>
       )}
-      <button onClick={onAdd} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      <AppButton onClick={onAdd} variant="primary" fullWidth>
         Añadir {title}
-      </button>
+      </AppButton>
     </div>
   </div>
 );

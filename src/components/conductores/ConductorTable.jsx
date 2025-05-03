@@ -18,13 +18,22 @@ const ConductoresTable = () => {
     {
       id: 'select',
       header: ({ table }) => (
-        <input type="checkbox" {...table.getToggleAllPageRowsSelectedProps()} />
+        <input
+          type="checkbox"
+          checked={table.getIsAllRowsSelected()}
+          onChange={table.getToggleAllRowsSelectedHandler()}
+        />
       ),
       cell: ({ row }) => (
-        <input type="checkbox" {...row.getToggleSelectedProps()} />
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={row.getToggleSelectedHandler()}
+        />
       ),
       enableSorting: false,
       enableColumnFilter: false,
+      size: 40,
     },
     { header: 'DNI', accessorKey: 'dni' },
     { header: 'Nombre', accessorKey: 'nombre' },
