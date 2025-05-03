@@ -5,12 +5,14 @@ import UserForm from './UserForm';
 import { toast } from 'react-toastify';
 import GenericTable from '../ui/GenericTable';
 import TableHeader from '../ui/TableHeader';
+import AppModal from '../ui/AppModal';
 
 const UserTable = () => {
   const [users, setUsers] = useState([]);
   const [userSeleccionado, setUserSeleccionado] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
+  const [modalEliminar, setModalEliminar] = useState(false);
 
   const cargarUsers = async () => {
     const currentUser = JSON.parse(sessionStorage.getItem('user'));
@@ -50,11 +52,15 @@ const UserTable = () => {
     { header: 'Rol', accessorKey: 'role' },
   ], []);
 
+  const confirmarEliminacion = () => {
+    if (Object.keys(rowSelection).length > 0) {
+      setModalEliminar(true);
+    }
+  };
+
   const eliminarSeleccionados = async () => {
     const seleccionados = Object.keys(rowSelection);
     if (!seleccionados.length) return;
-
-    if (!confirm(`¿Eliminar ${seleccionados.length} usuario(s)?`)) return;
 
     const resultados = await Promise.all(
       seleccionados.map((rowId) => deleteUser(users[rowId]._id))
@@ -72,6 +78,7 @@ const UserTable = () => {
     }
 
     setRowSelection({});
+    setModalEliminar(false);
     await cargarUsers();
   };
 
@@ -88,7 +95,7 @@ const UserTable = () => {
           setUserSeleccionado(null);
           setShowForm(true);
         }}
-        onDelete={eliminarSeleccionados}
+        onDelete={confirmarEliminacion}
         showDelete={Object.keys(rowSelection).length > 0}
       />
 
@@ -118,6 +125,17 @@ const UserTable = () => {
           }}
         />
       </FormDrawer>
+
+      <AppModal
+        isOpen={modalEliminar}
+        type="confirm"
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de que deseas eliminar ${Object.keys(rowSelection).length} usuario(s)?`}
+        confirmText="Aceptar"
+        cancelText="Cancelar"
+        onCancel={() => setModalEliminar(false)}
+        onConfirm={eliminarSeleccionados}
+      />
     </div>
   );
 };
