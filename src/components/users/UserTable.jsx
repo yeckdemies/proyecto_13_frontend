@@ -8,7 +8,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { getUsers, deleteUser } from '../../api/userService';
-import UserFormDrawer from './UserFormDrawer';
+import FormDrawer from '../ui/FormDrawer';
+import UserForm from './UserForm';
 import { toast } from 'react-toastify';
 
 const UserTable = () => {
@@ -227,7 +228,7 @@ const UserTable = () => {
         </div>
       </div>
 
-      <UserFormDrawer
+      <FormDrawer
         key={userSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
@@ -235,8 +236,18 @@ const UserTable = () => {
           setUserSeleccionado(null);
           await cargarUsers();
         }}
-        user={userSeleccionado}
-      />
+        title={userSeleccionado ? 'Editar Usuario' : 'Nuevo Usuario'}
+      >
+        <UserForm
+          user={userSeleccionado}
+          onClose={async () => {
+            setShowForm(false);
+            setUserSeleccionado(null);
+            await cargarUsers();
+          }}
+        />
+      </FormDrawer>
+
     </div>
   );
 };

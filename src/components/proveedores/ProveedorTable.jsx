@@ -8,7 +8,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { getProveedores, deleteProveedor } from '../../api/proveedoresService';
-import ProveedorFormDrawer from './ProveedorFormDrawer';
+import FormDrawer from '../ui/FormDrawer';
+import ProveedorForm from './ProveedorForm';
 import { toast } from 'react-toastify';
 import AppModal from '../ui/AppModal';
 
@@ -242,7 +243,7 @@ const ProveedorTable = () => {
         </div>
       </div>
 
-      <ProveedorFormDrawer
+      <FormDrawer
         key={proveedorSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
@@ -250,8 +251,17 @@ const ProveedorTable = () => {
           setProveedorSeleccionado(null);
           await cargarProveedores();
         }}
-        proveedor={proveedorSeleccionado}
-      />
+        title={proveedorSeleccionado ? 'Editar Proveedor' : 'Nuevo Proveedor'}
+      >
+        <ProveedorForm
+          proveedor={proveedorSeleccionado}
+          onClose={async () => {
+            setShowForm(false);
+            setProveedorSeleccionado(null);
+            await cargarProveedores();
+          }}
+        />
+      </FormDrawer>
 
       <AppModal
         isOpen={modalBloqueo.isOpen}

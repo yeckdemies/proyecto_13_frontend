@@ -8,7 +8,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { getReservas, cancelarReserva, reactivarReserva } from '../../api/reservasService';
-import ReservaFormDrawer from './ReservaFormDrawer';
+import FormDrawer from '../ui/FormDrawer';
+import ReservaForm from './ReservaForm';
 import AppModal from '../ui/AppModal';
 import { toast } from 'react-toastify';
 
@@ -223,7 +224,7 @@ const ReservasTable = () => {
         </div>
       </div>
 
-      <ReservaFormDrawer
+      <FormDrawer
         key={reservaSeleccionada?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
@@ -231,8 +232,17 @@ const ReservasTable = () => {
           setReservaSeleccionada(null);
           await cargarReservas();
         }}
-        reserva={reservaSeleccionada}
-      />
+        title={reservaSeleccionada ? 'Editar Reserva' : 'Nueva Reserva'}
+      >
+        <ReservaForm
+          reserva={reservaSeleccionada}
+          onClose={async () => {
+            setShowForm(false);
+            setReservaSeleccionada(null);
+            await cargarReservas();
+          }}
+        />
+      </FormDrawer>
 
       <AppModal
         isOpen={showModal}
@@ -240,7 +250,7 @@ const ReservasTable = () => {
         title="Cancelar reserva"
         label="Motivo de la cancelación"
         inputRequired
-        confirmText="Cancelar"
+        confirmText="Aceptar"
         cancelText="Cerrar"
         onCancel={() => {
           setShowModal(false);

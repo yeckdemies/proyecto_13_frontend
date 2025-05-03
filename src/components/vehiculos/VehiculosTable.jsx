@@ -8,7 +8,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { getVehiculos, deleteVehiculo } from '../../api/vehiculosService';
-import VehiculoFormDrawer from './VehiculoFormDrawer';
+import FormDrawer from '../ui/FormDrawer';
+import VehiculoForm from './VehiculoForm';
 import { toast } from 'react-toastify';
 import AppModal from '../ui/AppModal';
 
@@ -256,7 +257,7 @@ const VehiculosTable = () => {
         </div>
       </div>
 
-      <VehiculoFormDrawer
+      <FormDrawer
         key={vehiculoSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
@@ -264,8 +265,18 @@ const VehiculosTable = () => {
           setVehiculoSeleccionado(null);
           await cargarVehiculos();
         }}
-        vehiculo={vehiculoSeleccionado}
-      />
+        title={vehiculoSeleccionado ? 'Editar Vehículo' : 'Nuevo Vehículo'}
+      >
+        <VehiculoForm
+          vehiculo={vehiculoSeleccionado}
+          onClose={async () => {
+            setShowForm(false);
+            setVehiculoSeleccionado(null);
+            await cargarVehiculos();
+          }}
+        />
+      </FormDrawer>
+
 
       <AppModal
         isOpen={modalConfirmacion.isOpen}

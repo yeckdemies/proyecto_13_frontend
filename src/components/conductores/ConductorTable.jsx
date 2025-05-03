@@ -8,9 +8,11 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { getConductores, deleteConductor } from '../../api/conductoresService';
-import ConductorFormDrawer from './ConductorFormDrawer';
+import FormDrawer from '../ui/FormDrawer';
+import ConductorForm from './ConductorForm';
 import { toast } from 'react-toastify';
 import AppModal from '../ui/AppModal';
+
 
 const ConductorTable = () => {
   const [conductores, setConductores] = useState([]);
@@ -236,7 +238,7 @@ const ConductorTable = () => {
         </div>
       </div>
 
-      <ConductorFormDrawer
+      <FormDrawer
         key={conductorSeleccionado?._id || 'new'}
         isOpen={showForm}
         onClose={async () => {
@@ -244,8 +246,17 @@ const ConductorTable = () => {
           setConductorSeleccionado(null);
           await cargarConductores();
         }}
-        conductor={conductorSeleccionado}
-      />
+        title={conductorSeleccionado ? 'Editar Conductor' : 'Nuevo Conductor'}
+      >
+        <ConductorForm 
+          conductor={conductorSeleccionado}
+          onClose={() => {
+            setShowForm(false);
+            setConductorSeleccionado(null);
+            cargarConductores();
+          }}
+        />
+      </FormDrawer>
 
      <AppModal
         isOpen={modalConfirmacion.isOpen}
