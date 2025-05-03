@@ -21,7 +21,7 @@ const UserTable = () => {
   const [sorting, setSorting] = useState([]);
 
   const cargarUsers = async () => {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = JSON.parse(sessionStorage.getItem('user'));
     const res = await getUsers(currentUser?.email);
     if (res.success) setUsers(res.data);
     else toast.error(res.message || 'Error al obtener los usuarios');

@@ -22,7 +22,7 @@ const CambiarPassword = () => {
 
     if (res.success) {
       toast.success('Contraseña actualizada. Vuelve a iniciar sesión');
-      localStorage.clear();
+      sessionStorage.clear();
       navigate('/login');
     } else {
       toast.error(res.message || 'Error al cambiar la contraseña');

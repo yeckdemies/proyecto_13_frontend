@@ -94,8 +94,8 @@ export const validateUser = async () => {
     const { data } = await apiClient.get('/users/me');
     return { success: true, user: data };
   } catch (err) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     console.error('Error al validar usuario:', err);
     return { success: false, message: 'Token inválido' };
   }
