@@ -2,12 +2,10 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { createVehiculo, updateVehiculo } from '../../api/vehiculosService';
 import { getProveedores } from '../../api/proveedoresService';
-import { getConductores } from '../../api/conductoresService';
 import { toast } from 'react-toastify';
 
 const VehiculoForm = ({ vehiculo, onClose }) => {
   const [proveedores, setProveedores] = useState([]);
-  const [conductores, setConductores] = useState([]);
 
   const {
     register,
@@ -20,9 +18,6 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     (async () => {
       const provRes = await getProveedores();
       if (provRes.success) setProveedores(provRes.data);
-
-      const condRes = await getConductores();
-      if (condRes.success) setConductores(condRes.data);
 
       if (vehiculo) {
         reset(vehiculo);
@@ -78,7 +73,6 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         <InputField label="Inicio contrato renting" name="fechaInicioContratoRenting" type="date" register={register} />
         <InputField label="Fin contrato renting" name="fechaFinContratoRenting" type="date" register={register} />
         <SelectField label="Proveedor" name="proveedor" options={proveedores.map(p => ({ value: p._id, label: p.nombre }))} register={register} required errors={errors} />
-        <SelectField label="Conductor" name="conductor" options={conductores.map(c => ({ value: c._id, label: c.nombre }))} register={register} required errors={errors} />
         </div>
       <div className="flex justify-end pt-4">
         <button type="submit" className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 font-medium transition">

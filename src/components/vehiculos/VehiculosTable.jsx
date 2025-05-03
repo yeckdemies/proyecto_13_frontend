@@ -82,10 +82,6 @@ const VehiculosTable = () => {
     {
       header: 'Proveedor',
       accessorFn: row => row.proveedor?.nombre ?? '-'
-    },
-    {
-      header: 'Conductor',
-      accessorFn: row => row.conductor?.nombre ?? '-'
     }
   ], []);
 
@@ -130,7 +126,6 @@ const VehiculosTable = () => {
     setVehiculoSeleccionado({
       ...vehiculo,
       proveedor: vehiculo.proveedor?._id ?? vehiculo.proveedor,
-      conductor: vehiculo.conductor?._id ?? vehiculo.conductor,
       fechaVigorItv: vehiculo.fechaVigorItv?.substring(0, 10),
       fechaInicioContratoRenting: vehiculo.fechaInicioContratoRenting?.substring(0, 10),
       fechaFinContratoRenting: vehiculo.fechaFinContratoRenting?.substring(0, 10),
