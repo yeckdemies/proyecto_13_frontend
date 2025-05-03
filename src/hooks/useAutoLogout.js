@@ -6,25 +6,35 @@ const useAutoLogout = (delay = 30 * 60 * 1000) => {
 
   useEffect(() => {
     const logout = () => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
-      navigate('/login');
+      sessionStorage.clear();
+      localStorage.removeItem('token');
+      navigate('/login', { replace: true });
     };
 
-    let timeout;
+    let timeoutId;
+
     const resetTimer = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(logout, delay);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(logout, delay);
     };
 
-    const events = ['mousemove', 'keydown', 'click'];
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
 
-    events.forEach(event => window.addEventListener(event, resetTimer));
+    events.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
     resetTimer();
 
     return () => {
-      clearTimeout(timeout);
-      events.forEach(event => window.removeEventListener(event, resetTimer));
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      events.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
     };
   }, [navigate, delay]);
 };
