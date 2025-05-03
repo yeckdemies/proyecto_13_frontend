@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { showLoader, hideLoader } from '../utils/loaderEvents';
 
 const apiClient = axios.create({
   //const API_URL = 'https://proyecto-13-backend.onrender.com/api/v1/users';
@@ -13,8 +14,25 @@ apiClient.interceptors.request.use(config => {
     delete config.headers['Content-Type'];
   }
 
+  showLoader();
+
   return config;
 });
 
+apiClient.interceptors.response.use(
+  response => {
+    hideLoader();
+    return response;
+  },
+  error => {
+    hideLoader();
+    return Promise.reject(error);
+  }
+);
+
 
 export default apiClient;
+
+
+
+

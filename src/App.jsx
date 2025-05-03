@@ -12,12 +12,14 @@ import useAutoLogout from './hooks/useAutoLogout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Reservas from './pages/Reservas'
+import GlobalLoader from './components/ui/GlobalLoader'
 
 const App = () => {
   useAutoLogout();
 
   return (
     <>
+      <GlobalLoader />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
