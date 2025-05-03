@@ -48,14 +48,15 @@ export const updateConductor = async (id, conductor) => {
   }
 };
 
-export const deleteConductor = async (id) => {
+export const deleteConductor = async (id, eliminarReservas = false) => {
   try {
-    const { data } = await apiClient.delete(`/conductores/${id}`);
+    const { data } = await apiClient.delete(`/conductores/${id}?eliminarReservas=${eliminarReservas}`);
     return { success: true, data };
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al eliminar el conductor'
+      message: err.response?.data?.message || 'Error al eliminar el conductor',
+      reservas: err.response?.data?.reservas || [],
     };
   }
 };

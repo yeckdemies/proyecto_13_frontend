@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getVehiculos, deleteVehiculo } from '../../api/vehiculosService';
 import VehiculoFormDrawer from './VehiculoFormDrawer';
 import { toast } from 'react-toastify';
+import AppModal from '../ui/AppModal';
 
 const VehiculosTable = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -19,6 +20,8 @@ const VehiculosTable = () => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
+  const [modalConfirmacion, setModalConfirmacion] = useState({ isOpen: false, ids: [] });
+
 
   const cargarVehiculos = async () => {
     const res = await getVehiculos();
@@ -104,17 +107,24 @@ const VehiculosTable = () => {
   const eliminarSeleccionados = async () => {
     const seleccionados = table.getSelectedRowModel().rows;
     if (!seleccionados.length) return;
-
-    if (!confirm(`¿Eliminar ${seleccionados.length} vehículo(s)?`)) return;
-
+  
+    const conReservas = [];
+  
     for (const row of seleccionados) {
-      await deleteVehiculo(row.original._id);
+      const res = await deleteVehiculo(row.original._id);
+      if (!res.success && res.reservas?.length) {
+        conReservas.push(row.original._id);
+      }
     }
-
-    toast.success('Vehículos eliminados correctamente');
-    table.resetRowSelection();
-    await cargarVehiculos();
-  };
+  
+    if (conReservas.length > 0) {
+      setModalConfirmacion({ isOpen: true, ids: conReservas });
+    } else {
+      toast.success('Vehículos eliminados correctamente');
+      table.resetRowSelection();
+      await cargarVehiculos();
+    }
+  };  
 
   const abrirEdicion = (vehiculo) => {
     setVehiculoSeleccionado({
@@ -260,6 +270,22 @@ const VehiculosTable = () => {
           await cargarVehiculos();
         }}
         vehiculo={vehiculoSeleccionado}
+      />
+
+      <AppModal
+        isOpen={modalConfirmacion.isOpen}
+        title="Reservas asociadas encontradas"
+        description={`Algunos de los vehículos seleccionados tienen reservas. ¿Deseas eliminar también esas reservas?`}
+        onCancel={() => setModalConfirmacion({ isOpen: false, ids: [] })}
+        onConfirm={async () => {
+          for (const id of modalConfirmacion.ids) {
+            await deleteVehiculo(id, true);
+          }
+          toast.success('Vehículos y reservas eliminados');
+          setModalConfirmacion({ isOpen: false, ids: [] });
+          table.resetRowSelection();
+          await cargarVehiculos();
+        }}
       />
     </div>
   );

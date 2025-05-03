@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getConductores, deleteConductor } from '../../api/conductoresService';
 import ConductorFormDrawer from './ConductorFormDrawer';
 import { toast } from 'react-toastify';
+import AppModal from '../ui/AppModal';
 
 const ConductorTable = () => {
   const [conductores, setConductores] = useState([]);
@@ -19,6 +20,9 @@ const ConductorTable = () => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
+  const [modalConfirmacion, setModalConfirmacion] = useState({ isOpen: false, ids: [] });
+
+
 
   const cargarConductores = async () => {
     const res = await getConductores();
@@ -81,16 +85,24 @@ const ConductorTable = () => {
   const eliminarSeleccionados = async () => {
     const seleccionados = table.getSelectedRowModel().rows;
     if (!seleccionados.length) return;
-
-    if (!confirm(`¿Eliminar ${seleccionados.length} conductor(es)?`)) return;
-
+  
+    const conReservas = [];
+  
     for (const row of seleccionados) {
-      await deleteConductor(row.original._id);
+      const res = await deleteConductor(row.original._id);
+      if (!res.success && res.reservas?.length) {
+        conReservas.push(row.original._id);
+      }
     }
-
-    toast.success('Conductores eliminados correctamente');
-    table.resetRowSelection();
-    await cargarConductores();
+  
+    // Si hay alguno con reservas, pedir confirmación
+    if (conReservas.length > 0) {
+      setModalConfirmacion({ isOpen: true, ids: conReservas });
+    } else {
+      toast.success('Conductores eliminados correctamente');
+      table.resetRowSelection();
+      await cargarConductores();
+    }
   };
 
   const abrirEdicion = (conductor) => {
@@ -233,6 +245,22 @@ const ConductorTable = () => {
           await cargarConductores();
         }}
         conductor={conductorSeleccionado}
+      />
+
+     <AppModal
+        isOpen={modalConfirmacion.isOpen}
+        title="Reservas asociadas encontradas"
+        description={`Algunos de los conductores seleccionados tienen reservas. ¿Deseas eliminar también esas reservas?`}
+        onCancel={() => setModalConfirmacion({ isOpen: false, ids: [] })}
+        onConfirm={async () => {
+          for (const id of modalConfirmacion.ids) {
+            await deleteConductor(id, true);
+          }
+          toast.success('Conductores y reservas eliminados');
+          setModalConfirmacion({ isOpen: false, ids: [] });
+          table.resetRowSelection();
+          await cargarConductores();
+        }}
       />
     </div>
   );
