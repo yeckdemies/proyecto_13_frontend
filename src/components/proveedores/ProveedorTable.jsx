@@ -64,7 +64,7 @@ const ProveedorTable = () => {
     { header: 'Ciudad', accessorKey: 'ciudad' },
     { header: 'Provincia', accessorKey: 'provincia' },
     { header: 'Código Postal', accessorKey: 'codigoPostal' },
-    { header: 'Tipo de Proveedor', accessorKey: 'tipoProveedor' }
+    { header: 'Tipo de Proveedor', accessorKey: 'tipo' }
   ], []);
 
   const table = useReactTable({

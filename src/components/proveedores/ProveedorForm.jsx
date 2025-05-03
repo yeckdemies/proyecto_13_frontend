@@ -38,7 +38,7 @@ const ProveedorForm = ({ proveedor, onClose }) => {
         <InputField label="Razón Social" name="razonSocial" register={register} required errors={errors} />
         <InputField label="Teléfono" name="telefono" type="number" register={register} />
         <InputField label="Email" name="email" type="email" register={register} required errors={errors} />
-        <InputField label="Página Web" name="paginaWeb" type="url" register={register} required errors={errors} />
+        <InputField label="Página Web" name="paginaWeb" register={register} required errors={errors} />
         <InputField label="Direccion" name="direccion" register={register} required errors={errors} />
         <InputField label="Ciudad" name="ciudad" register={register} required errors={errors} />
         <InputField label="Provincia" name="provincia" register={register} required errors={errors} />
