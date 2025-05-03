@@ -50,7 +50,7 @@ export const comprobarDisponibilidad = async (payload) => {
     const { data } = await apiClient.post('/reservas/disponibilidad', payload);
     return {
       success: true,
-      data: data.data // ✅ esto es lo que contiene vehiculoDisponible y conductorDisponible
+      data: data.data
     };
   } catch (err) {
     return {
