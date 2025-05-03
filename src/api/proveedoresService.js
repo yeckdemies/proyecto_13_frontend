@@ -55,7 +55,8 @@ export const deleteProveedor = async (id) => {
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || 'Error al eliminar el proveedor'
+      message: err.response?.data?.message || 'Error al eliminar proveedor',
+      vehiculos: err.response?.data?.vehiculos || [],
     };
   }
 };

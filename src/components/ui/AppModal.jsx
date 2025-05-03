@@ -49,13 +49,13 @@ const AppModal = ({
         <div className="flex justify-end gap-2">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300"
+            className="cursor-pointer px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300"
           >
             {cancelText}
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
+            className="cursor-pointer px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
           >
             {confirmText}
           </button>

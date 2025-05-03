@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getProveedores, deleteProveedor } from '../../api/proveedoresService';
 import ProveedorFormDrawer from './ProveedorFormDrawer';
 import { toast } from 'react-toastify';
+import AppModal from '../ui/AppModal';
 
 const ProveedorTable = () => {
   const [proveedores, setProveedores] = useState([]);
@@ -19,6 +20,7 @@ const ProveedorTable = () => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
   const [sorting, setSorting] = useState([]);
+  const [modalBloqueo, setModalBloqueo] = useState({ isOpen: false, mensaje: '', detalles: [] });
 
   const cargarProveedores = async () => {
     const res = await getProveedores();
@@ -84,15 +86,30 @@ const ProveedorTable = () => {
     const seleccionados = table.getSelectedRowModel().rows;
     if (!seleccionados.length) return;
 
-    if (!confirm(`¿Eliminar ${seleccionados.length} proveedor(es)?`)) return;
+    let algunoEliminado = false;
 
     for (const row of seleccionados) {
-      await deleteProveedor(row.original._id);
+      const res = await deleteProveedor(row.original._id);
+
+      if (!res.success && res.vehiculos?.length) {
+        setModalBloqueo({
+          isOpen: true,
+          mensaje: res.message,
+          detalles: res.vehiculos,
+        });
+        return;
+      }
+
+      if (res.success) {
+        algunoEliminado = true;
+      }
     }
 
-    toast.success('Proveedores eliminados correctamente');
-    table.resetRowSelection();
-    await cargarProveedores();
+    if (algunoEliminado) {
+      toast.success('Proveedor(es) eliminado(s)');
+      await cargarProveedores();
+      table.resetRowSelection();
+    }
   };
 
   const abrirEdicion = (proveedor) => {
@@ -235,6 +252,27 @@ const ProveedorTable = () => {
         }}
         proveedor={proveedorSeleccionado}
       />
+
+      <AppModal
+        isOpen={modalBloqueo.isOpen}
+        title="No se puede eliminar"
+        description={modalBloqueo.mensaje}
+        type="confirm"
+        confirmText="Aceptar"
+        onConfirm={() => setModalBloqueo({ isOpen: false, mensaje: '', detalles: [] })}
+        onCancel={() => setModalBloqueo({ isOpen: false, mensaje: '', detalles: [] })}
+      />
+
+      {modalBloqueo.detalles.length > 0 && (
+        <div className="mt-2 px-4 text-sm text-gray-700">
+          <strong>Vehículos asociados:</strong>
+          <ul className="list-disc ml-5 mt-1">
+            {modalBloqueo.detalles.map((v) => (
+              <li key={v.id}>{v.matricula}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
