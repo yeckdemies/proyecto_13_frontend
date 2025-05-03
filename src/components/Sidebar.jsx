@@ -51,7 +51,7 @@ const Sidebar = () => {
           <img
             src="https://res.cloudinary.com/dszffglcl/image/upload/v1746219984/nbyec04ugqxs7p6nei3z.png"
             alt="Gestión de Flota"
-            className={`transition-all duration-300 cursor-pointer ${open ? 'w-40' : 'w-10'}`}
+            className={`transition-all duration-300 cursor-pointer w-10 sm:${open ? 'w-40' : 'w-10'}`}
           />
         </Link>
       </div>
