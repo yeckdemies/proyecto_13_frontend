@@ -1,15 +1,25 @@
 import React from 'react';
 
-export const InputField = ({ label, name, register, required = false, type = 'text', errors, disabled = false }) => (
+export const InputField = ({
+  label,
+  name,
+  register,
+  rules = {},
+  type = 'text',
+  errors,
+  disabled = false,
+}) => (
   <div className="flex flex-col">
-    <label className="text-sm font-medium text-gray-700">
+    <label htmlFor={name} className="text-sm font-medium text-gray-700">
       {label}
-      {required && <span className="text-red-500"> *</span>}
+      {rules.required && <span className="text-red-500"> *</span>}
     </label>
     <input
+      id={name}
+      name={name}
       type={type}
       disabled={disabled}
-      {...register(name, required ? { required: 'Campo requerido' } : {})}
+      {...register(name, rules)}
       className={`mt-1 block w-full rounded-md border ${
         type === 'file' ? 'p-1' : 'px-3 py-2'
       } border-gray-300 shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100`}
