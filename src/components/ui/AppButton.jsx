@@ -28,7 +28,7 @@ const AppButton = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center justify-center gap-2 rounded font-medium transition whitespace-nowrap
+      className={`cursor-pointer flex items-center justify-center gap-2 rounded font-medium transition whitespace-nowrap
         ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''}
         ${className}`}
     >
