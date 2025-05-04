@@ -26,6 +26,7 @@ const ProveedorForm = ({ proveedor, onClose }) => {
 
     if (res.success) {
       toast.success('Proveedor guardado correctamente');
+      reset();
       onClose();
     } else {
       toast.error(res.message || 'Error al guardar el proveedor');

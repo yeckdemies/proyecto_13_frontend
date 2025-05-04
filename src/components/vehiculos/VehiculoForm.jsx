@@ -48,6 +48,7 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
 
     if (res.success) {
       toast.success('Vehículo guardado correctamente');
+      reset();
       onClose();
     } else {
       toast.error(res.message || 'Error al guardar vehículo');

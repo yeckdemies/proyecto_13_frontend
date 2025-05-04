@@ -24,6 +24,7 @@ const UserForm = ({ user, onClose }) => {
 
     if (res.success) {
       toast.success('Usuario guardado correctamente');
+      reset();
       onClose();
     } else {
       toast.error(res.message || 'Error al guardar el usuario');

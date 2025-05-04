@@ -143,6 +143,7 @@ const ReservaForm = ({ reserva, onClose }) => {
 
     if (res.success) {
       toast.success('Reserva guardada correctamente');
+      reset();
       onClose();
     } else {
       toast.error(res.message || 'Error al guardar la reserva');

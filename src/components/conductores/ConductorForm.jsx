@@ -26,6 +26,7 @@ const ConductorForm = ({ conductor, onClose }) => {
 
     if (res.success) {
       toast.success('Conductor guardado correctamente');
+      reset();
       onClose();
     } else {
       toast.error(res.message || 'Error al guardar el conductor');
