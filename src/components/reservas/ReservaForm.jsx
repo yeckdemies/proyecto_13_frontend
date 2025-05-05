@@ -29,8 +29,21 @@ const ReservaForm = ({ reserva, onClose }) => {
   const [isComprobando, setIsComprobando] = useState(false);
 
   const reservaId = useMemo(() => reserva?._id, [reserva]);
-  const vehiculoOriginal = useMemo(() => reserva?.vehiculo?._id ?? reserva?.vehiculo, [reserva]);
-  const conductorOriginal = useMemo(() => reserva?.conductor?._id ?? reserva?.conductor, [reserva]);
+
+  const vehiculoOriginal = useMemo(() => {
+    if (reserva?.vehiculo && typeof reserva.vehiculo === 'object') {
+      return reserva.vehiculo._id;
+    }
+    return reserva?.vehiculo || '';
+  }, [reserva]);
+
+  const conductorOriginal = useMemo(() => {
+    if (reserva?.conductor && typeof reserva.conductor === 'object') {
+      return reserva.conductor._id;
+    }
+    return reserva?.conductor || '';
+  }, [reserva]);
+
   const esCancelada = reserva?.estado === 'Cancelada';
 
   const vehiculo = watch('vehiculo');
@@ -101,12 +114,11 @@ const ReservaForm = ({ reserva, onClose }) => {
         toast.error(res.message || 'Error comprobando disponibilidad');
       }
     } catch (err) {
-      console.error(err);
       setDisponibilidad({
         vehiculoDisponible: true,
         conductorDisponible: true
       });
-      toast.error('Error inesperado al comprobar disponibilidad');
+      toast.error('Error inesperado al comprobar disponibilidad: ', err.message);
     } finally {
       setIsComprobando(false);
     }
