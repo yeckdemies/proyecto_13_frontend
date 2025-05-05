@@ -6,6 +6,7 @@ import AppModal from '../ui/AppModal';
 import TableHeader from '../ui/TableHeader';
 import GenericTable from '../ui/GenericTable';
 import { toast } from 'react-toastify';
+import { validateUser } from '../../api/userService';
 
 const ConductoresTable = () => {
   const [conductores, setConductores] = useState([]);
@@ -13,6 +14,7 @@ const ConductoresTable = () => {
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [modal, setModal] = useState({ isOpen: false, ids: [] });
+  const [userRole, setUserRole] = useState('');
 
   const columns = useMemo(() => [
     {
@@ -66,13 +68,31 @@ const ConductoresTable = () => {
     cargarConductores();
   }, []);
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      const res = await validateUser();
+      if (res.success) {
+        setUserRole(res.user.role);
+      }
+      await cargarConductores();
+    };
+
+    cargarDatos();
+  }, []);
+
   const eliminarSeleccionados = async () => {
     const seleccionados = Object.keys(rowSelection);
+    if (!seleccionados.length) return;
+
     const conReservas = [];
 
-    for (const id of seleccionados) {
-      const res = await deleteConductor(id);
-      if (!res.success && res.reservas?.length) conReservas.push(id);
+    for (const rowId of seleccionados) {
+      const conductor = conductores[rowId];
+      const res = await deleteConductor(conductor._id);
+
+      if (!res.success && res.reservas?.length) {
+        conReservas.push(conductor._id);
+      }
     }
 
     if (conReservas.length) {
@@ -93,7 +113,7 @@ const ConductoresTable = () => {
           setShowForm(true);
         }}
         onDelete={eliminarSeleccionados}
-        showDelete={Object.keys(rowSelection).length > 0}
+        showDelete={userRole === 'admin' && Object.keys(rowSelection).length > 0}
       />
 
       <GenericTable

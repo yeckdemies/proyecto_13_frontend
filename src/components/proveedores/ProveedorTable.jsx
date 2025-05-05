@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import AppModal from '../ui/AppModal';
 import GenericTable from '../ui/GenericTable';
 import TableHeader from '../ui/TableHeader';
+import { validateUser } from '../../api/userService';
 
 const ProveedorTable = () => {
   const [proveedores, setProveedores] = useState([]);
@@ -13,6 +14,7 @@ const ProveedorTable = () => {
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [modalBloqueo, setModalBloqueo] = useState({ isOpen: false, mensaje: '', detalles: [] });
+  const [userRole, setUserRole] = useState('');
 
   const cargarProveedores = async () => {
     const res = await getProveedores();
@@ -59,6 +61,18 @@ const ProveedorTable = () => {
     { header: 'Tipo de Proveedor', accessorKey: 'tipo' }
   ], []);
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      const res = await validateUser();
+      if (res.success) {
+        setUserRole(res.user.role);
+      }
+      await cargarProveedores();
+    };
+
+    cargarDatos();
+  }, []);
+
   const eliminarSeleccionados = async () => {
     const seleccionados = Object.keys(rowSelection);
     if (!seleccionados.length) return;
@@ -104,7 +118,7 @@ const ProveedorTable = () => {
           setShowForm(true);
         }}
         onDelete={eliminarSeleccionados}
-        showDelete={Object.keys(rowSelection).length > 0}
+        showDelete={userRole === 'admin' && Object.keys(rowSelection).length > 0}
       />
 
       <GenericTable

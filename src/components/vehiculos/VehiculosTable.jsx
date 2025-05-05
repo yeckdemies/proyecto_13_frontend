@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import AppModal from '../ui/AppModal';
 import GenericTable from '../ui/GenericTable';
 import TableHeader from '../ui/TableHeader';
+import { validateUser } from '../../api/userService';
 
 const VehiculosTable = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -13,6 +14,7 @@ const VehiculosTable = () => {
   const [showForm, setShowForm] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [modalConfirmacion, setModalConfirmacion] = useState({ isOpen: false, ids: [] });
+  const [userRole, setUserRole] = useState('');
 
   const cargarVehiculos = async () => {
     const res = await getVehiculos();
@@ -114,6 +116,18 @@ const VehiculosTable = () => {
     }
   ], []);
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      const res = await validateUser();
+      if (res.success) {
+        setUserRole(res.user.role);
+      }
+      await cargarVehiculos();
+    };
+
+    cargarDatos();
+  }, []);
+
   const eliminarSeleccionados = async () => {
     const seleccionados = Object.keys(rowSelection);
     if (!seleccionados.length) return;
@@ -157,7 +171,7 @@ const VehiculosTable = () => {
           setShowForm(true);
         }}
         onDelete={eliminarSeleccionados}
-        showDelete={Object.keys(rowSelection).length > 0}
+        showDelete={userRole === 'admin' && Object.keys(rowSelection).length > 0}
       />
 
       <GenericTable
