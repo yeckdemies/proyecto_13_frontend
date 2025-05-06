@@ -2,8 +2,8 @@ import axios from 'axios';
 import { showLoader, hideLoader } from '../utils/loaderEvents';
 
 const apiClient = axios.create({
-  //baseURL: 'http://localhost:10000/api/v1',
-  baseURL: 'https://proyecto-13-backend.onrender.com/api/v1',
+  baseURL: 'http://localhost:10000/api/v1',
+  //baseURL: 'https://proyecto-13-backend.onrender.com/api/v1',
 });
 
 apiClient.interceptors.request.use(config => {

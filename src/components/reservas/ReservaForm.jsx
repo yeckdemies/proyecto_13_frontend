@@ -56,28 +56,22 @@ const ReservaForm = ({ reserva, onClose }) => {
       const [vehRes, condRes] = await Promise.all([getVehiculos(), getConductores()]);
       if (vehRes.success) setVehiculos(vehRes.data);
       if (condRes.success) setConductores(condRes.data);
-
-      if (reserva) {
-        reset({
-          vehiculo: vehiculoOriginal,
-          conductor: conductorOriginal,
-          fechaInicio: reserva.fechaInicio?.substring(0, 10),
-          fechaFin: reserva.fechaFin?.substring(0, 10),
-          motivoCancelacion: reserva.motivoCancelacion || ''
-        });
-      } else {
-        reset({
-          vehiculo: '',
-          conductor: '',
-          fechaInicio: '',
-          fechaFin: '',
-          motivoCancelacion: ''
-        });
-      }
     };
 
     cargarDatos();
-  }, [reserva, reset, vehiculoOriginal, conductorOriginal]);
+  }, []);
+
+  useEffect(() => {
+    if (!reserva || vehiculos.length === 0 || conductores.length === 0) return;
+
+    reset({
+      vehiculo: vehiculoOriginal,
+      conductor: conductorOriginal,
+      fechaInicio: reserva.fechaInicio?.substring(0, 10),
+      fechaFin: reserva.fechaFin?.substring(0, 10),
+      motivoCancelacion: reserva.motivoCancelacion || ''
+    });
+  }, [reserva, vehiculos, conductores, reset, vehiculoOriginal, conductorOriginal]);
 
   const verificarDisponibilidad = useCallback(async () => {
     if (!vehiculo || !conductor || !fechaInicio || !fechaFin) return;
@@ -118,7 +112,7 @@ const ReservaForm = ({ reserva, onClose }) => {
         vehiculoDisponible: true,
         conductorDisponible: true
       });
-      toast.error('Error inesperado al comprobar disponibilidad: ', err.message);
+      toast.error('Error inesperado al comprobar disponibilidad,', err);
     } finally {
       setIsComprobando(false);
     }
