@@ -20,14 +20,33 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     (async () => {
       const provRes = await getProveedores();
       if (provRes.success) setProveedores(provRes.data);
-
-      if (vehiculo) {
-        reset(vehiculo);
-      } else {
-        reset({});
-      }
     })();
-  }, [vehiculo, reset]);
+  }, []);
+
+  useEffect(() => {
+    if (!vehiculo || proveedores.length === 0) return;
+
+    reset({
+      tipoVehiculo: vehiculo.tipoVehiculo || '',
+      matricula: vehiculo.matricula || '',
+      bastidor: vehiculo.bastidor || '',
+      estado: vehiculo.estado || 'Activo',
+      tipoCombustible: vehiculo.tipoCombustible || '',
+      ciudad: vehiculo.ciudad || '',
+      marca: vehiculo.marca || '',
+      modelo: vehiculo.modelo || '',
+      anio: vehiculo.anio || '',
+      color: vehiculo.color || '',
+      fechaVigorItv: vehiculo.fechaVigorItv?.substring(0, 10) || '',
+      costeAlquilerMensual: vehiculo.costeAlquilerMensual || '',
+      fechaInicioContratoRenting: vehiculo.fechaInicioContratoRenting?.substring(0, 10) || '',
+      fechaFinContratoRenting: vehiculo.fechaFinContratoRenting?.substring(0, 10) || '',
+      proveedor: typeof vehiculo.proveedor === 'object'
+        ? vehiculo.proveedor._id
+        : vehiculo.proveedor || ''
+    });
+  }, [vehiculo, proveedores, reset]);
+  
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -101,7 +120,7 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
         <SelectField
           label="Estado"
           name="estado"
-          options={['Activo', 'Inactivo', 'Taller']}
+          options={['Activo', 'Taller']}
           register={register}
           rules={{ required: 'Campo requerido' }}
           errors={errors}
