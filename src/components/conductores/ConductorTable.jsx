@@ -80,6 +80,17 @@ const ConductoresTable = () => {
     cargarDatos();
   }, []);
 
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setConductorSeleccionado(null);
+  };
+
+  const cerrarYRecargar = async () => {
+    setShowForm(false);
+    setConductorSeleccionado(null);
+    await cargarConductores();
+  };
+
   const eliminarSeleccionados = async () => {
     const seleccionados = Object.keys(rowSelection);
     if (!seleccionados.length) return;
@@ -132,21 +143,13 @@ const ConductoresTable = () => {
       <FormDrawer
         key={conductorSeleccionado?._id || 'new'}
         isOpen={showForm}
-        onClose={() => {
-          setShowForm(false);
-          setConductorSeleccionado(null);
-          cargarConductores();
-        }}
+        onClose={cerrarFormulario}
         title={conductorSeleccionado ? 'Editar Conductor' : 'Nuevo Conductor'}
       >
-        <ConductorForm
-          conductor={conductorSeleccionado}
-          onClose={() => {
-            setShowForm(false);
-            setConductorSeleccionado(null);
-            cargarConductores();
-          }}
-        />
+          <ConductorForm
+            conductor={conductorSeleccionado}
+            onClose={cerrarYRecargar}
+          />
       </FormDrawer>
 
       <AppModal

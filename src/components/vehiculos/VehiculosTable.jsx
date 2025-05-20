@@ -162,6 +162,17 @@ const VehiculosTable = () => {
     setShowForm(true);
   };
 
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setVehiculoSeleccionado(null);
+  };
+
+  const cerrarYRecargar = async () => {
+    setShowForm(false);
+    setVehiculoSeleccionado(null);
+    await cargarVehiculos();
+  };
+
   return (
     <div className="w-full">
       <TableHeader
@@ -184,20 +195,12 @@ const VehiculosTable = () => {
       <FormDrawer
         key={vehiculoSeleccionado?._id || 'new'}
         isOpen={showForm}
-        onClose={async () => {
-          setShowForm(false);
-          setVehiculoSeleccionado(null);
-          await cargarVehiculos();
-        }}
+        onClose={cerrarFormulario}
         title={vehiculoSeleccionado ? 'Editar Vehículo' : 'Nuevo Vehículo'}
       >
         <VehiculoForm
           vehiculo={vehiculoSeleccionado}
-          onClose={async () => {
-            setShowForm(false);
-            setVehiculoSeleccionado(null);
-            await cargarVehiculos();
-          }}
+          onClose={cerrarYRecargar}
         />
       </FormDrawer>
 

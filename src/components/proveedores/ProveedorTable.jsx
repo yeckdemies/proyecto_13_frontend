@@ -109,6 +109,17 @@ const ProveedorTable = () => {
     setShowForm(true);
   };
 
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setProveedorSeleccionado(null);
+  };
+
+  const cerrarYRecargar = async () => {
+    setShowForm(false);
+    setProveedorSeleccionado(null);
+    await cargarProveedores();
+  };
+
   return (
     <div className="w-full">
       <TableHeader
@@ -131,20 +142,12 @@ const ProveedorTable = () => {
       <FormDrawer
         key={proveedorSeleccionado?._id || 'new'}
         isOpen={showForm}
-        onClose={async () => {
-          setShowForm(false);
-          setProveedorSeleccionado(null);
-          await cargarProveedores();
-        }}
+        onClose={cerrarFormulario}
         title={proveedorSeleccionado ? 'Editar Proveedor' : 'Nuevo Proveedor'}
       >
         <ProveedorForm
           proveedor={proveedorSeleccionado}
-          onClose={async () => {
-            setShowForm(false);
-            setProveedorSeleccionado(null);
-            await cargarProveedores();
-          }}
+          onClose={cerrarYRecargar}
         />
       </FormDrawer>
 

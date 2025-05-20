@@ -87,6 +87,17 @@ const UserTable = () => {
     setShowForm(true);
   };
 
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setUserSeleccionado(null);
+  };
+
+  const cerrarYRecargar = async () => {
+    setShowForm(false);
+    setUserSeleccionado(null);
+    await cargarUsers();
+  };
+
   return (
     <div className="w-full">
       <TableHeader
@@ -109,20 +120,12 @@ const UserTable = () => {
       <FormDrawer
         key={userSeleccionado?._id || 'new'}
         isOpen={showForm}
-        onClose={async () => {
-          setShowForm(false);
-          setUserSeleccionado(null);
-          await cargarUsers();
-        }}
+        onClose={cerrarFormulario}
         title={userSeleccionado ? 'Editar Usuario' : 'Nuevo Usuario'}
       >
         <UserForm
           user={userSeleccionado}
-          onClose={async () => {
-            setShowForm(false);
-            setUserSeleccionado(null);
-            await cargarUsers();
-          }}
+          onClose={cerrarYRecargar}
         />
       </FormDrawer>
 

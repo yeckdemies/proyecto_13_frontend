@@ -13,7 +13,8 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors },
+    watch
   } = useForm();
 
   useEffect(() => {
@@ -82,6 +83,8 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
     if (fecha > max) return 'Fecha máxima: año 2050';
     return true;
   };
+
+  const fechaInicio = watch('fechaInicioContratoRenting');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 text-sm">
@@ -231,7 +234,13 @@ const VehiculoForm = ({ vehiculo, onClose }) => {
           register={register}
           rules={{
             required: 'Campo requerido',
-            validate: validarFecha
+            validate: (value) => {
+              if (!fechaInicio) return true;
+              const inicio = new Date(fechaInicio);
+              const fin = new Date(value);
+              if (fin < inicio) return 'La fecha de fin no puede ser anterior a la fecha de inicio';
+              return validarFecha(value);
+            }
           }}
           errors={errors}
         />

@@ -109,6 +109,17 @@ const ReservasTable = () => {
     }
   ], []);
 
+  const cerrarFormulario = () => {
+    setShowForm(false);
+    setReservaSeleccionada(null);
+  };
+
+  const cerrarYRecargar = async () => {
+    setShowForm(false);
+    setReservaSeleccionada(null);
+    await cargarReservas();
+  };
+
   return (
     <div className="w-full">
       <TableHeader
@@ -128,20 +139,12 @@ const ReservasTable = () => {
       <FormDrawer
         key={reservaSeleccionada?._id ?? 'new'}
         isOpen={showForm}
-        onClose={async () => {
-          setShowForm(false);
-          setReservaSeleccionada(null);
-          await cargarReservas();
-        }}
+        onClose={cerrarFormulario}
         title={reservaSeleccionada ? 'Editar Reserva' : 'Nueva Reserva'}
       >
         <ReservaForm
           reserva={reservaSeleccionada}
-          onClose={async () => {
-            setShowForm(false);
-            setReservaSeleccionada(null);
-            await cargarReservas();
-          }}
+          onClose={cerrarYRecargar}
         />
       </FormDrawer>
 
